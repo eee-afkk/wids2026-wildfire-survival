@@ -1,0 +1,33 @@
+feature_name,group,type,transformation,source
+log_dist,Distance / urgency,Continuous,"log(1 + d), d = dist_min_ci_0_5h",Engineered
+inv_dist,Distance / urgency,Continuous,"1 / (1000 + d), d = dist_min_ci_0_5h",Engineered
+short_range_urgency,Distance / urgency,Continuous,"exp(-d / 2500), d = dist_min_ci_0_5h",Engineered
+eta_hours,Distance / urgency,Continuous,"d / max(closing_speed_abs, 50), clipped at 240 h",Engineered
+closing_speed_m_per_h,Speed / alignment,Continuous,Signed closing speed (m/h),Original
+closing_speed_abs_m_per_h,Speed / alignment,Continuous,Absolute closing speed (m/h),Original
+centroid_speed_m_per_h,Speed / alignment,Continuous,Centroid speed (m/h),Original
+alignment_abs,Speed / alignment,Continuous,Absolute alignment between fire spread and zone direction,Original
+directional_push,Speed / alignment,Continuous,"max(closing_speed, 0) × |alignment|",Engineered
+area_growth_rate_ha_per_h,Growth / spread,Continuous,Area growth rate (ha/h),Original
+radial_growth_rate_m_per_h,Growth / spread,Continuous,Radial growth rate (m/h),Original
+log1p_growth,Growth / spread,Continuous,"log(1 + growth), pre-existing column",Original
+area_growth_abs_0_5h,Growth / spread,Continuous,Absolute area growth in 0–5 h window,Original
+closing_x_growth,Growth / spread,Continuous,closing_speed_abs × log1p_growth,Engineered
+area_speed_interaction,Growth / spread,Continuous,area_growth_rate_ha_per_h × alignment_abs,Engineered
+num_perimeters_0_5h,Temporal / monitoring,Integer,Number of fire perimeters observed in 0–5 h,Original
+dt_first_last_0_5h,Temporal / monitoring,Continuous,Time span between first and last perimeter observation,Original
+low_temporal_resolution_0_5h,Temporal / monitoring,Binary,Indicator for low temporal resolution observations,Original
+start_hour_sin,Temporal / regime,Continuous,"sin(2π × hour / 24), cyclical encoding",Engineered
+start_hour_cos,Temporal / regime,Continuous,"cos(2π × hour / 24), cyclical encoding",Engineered
+start_dow_sin,Temporal / regime,Continuous,"sin(2π × day_of_week / 7), cyclical encoding",Engineered
+start_dow_cos,Temporal / regime,Continuous,"cos(2π × day_of_week / 7), cyclical encoding",Engineered
+start_month_sin,Temporal / regime,Continuous,"sin(2π × (month - 1) / 12), cyclical encoding",Engineered
+start_month_cos,Temporal / regime,Continuous,"cos(2π × (month - 1) / 12), cyclical encoding",Engineered
+regime_threat,Temporal / regime,Binary,d < 4500 m,Engineered
+regime_boundary,Temporal / regime,Binary,4500 ≤ d ≤ 7000 m,Engineered
+regime_far,Temporal / regime,Binary,d > 7000 m,Engineered
+dist_min_ci_0_5h,Distance / urgency,Continuous,Raw minimum distance to closest fire perimeter (m),Original
+area_growth_rel_0_5h,Growth / spread,Continuous,Relative area growth in 0–5 h window,Original
+event_start_hour,Temporal / monitoring,Integer,Hour of fire ignition,Original
+event_start_dayofweek,Temporal / monitoring,Integer,Day of week of fire ignition,Original
+event_start_month,Temporal / monitoring,Integer,Month of fire ignition,Original
