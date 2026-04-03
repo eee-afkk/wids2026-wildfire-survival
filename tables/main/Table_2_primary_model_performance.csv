@@ -1,0 +1,7 @@
+﻿"metric","estimate","ci_95"
+"Pairwise concordance index proxy","0.94","[0.927, 0.955]"
+"Uno's IPCW C-index","0.941","[0.924, 0.959]"
+"Mean Brier (IBS proxy)","0.041","[0.025, 0.058]"
+"Brier @ 12h","0.06","[0.038, 0.086]"
+"Brier @ 24h","0.035","[0.017, 0.058]"
+"Brier @ 48h","0.027","[0.009, 0.050]"

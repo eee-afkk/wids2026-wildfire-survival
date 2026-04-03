@@ -1,0 +1,11 @@
+﻿split_strategy,fold,n_val,n_incident_groups_val,c_index,mean_brier
+stratified_cv,1,45,21,0.9268,0.1288
+stratified_cv,2,44,22,0.9504,0.1832
+stratified_cv,3,44,21,0.9262,0.1006
+stratified_cv,4,44,22,0.9362,0.1084
+stratified_cv,5,44,20,0.9196,0.1552
+grouped_cv,1,45,8,0.9204,0.1951
+grouped_cv,2,44,8,0.8807,0.2527
+grouped_cv,3,44,8,0.9234,0.062
+grouped_cv,4,44,9,0.9579,0.1635
+grouped_cv,5,44,10,0.9592,0.0974

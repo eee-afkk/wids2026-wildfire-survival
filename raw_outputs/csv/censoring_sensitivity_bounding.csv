@@ -1,0 +1,4 @@
+﻿horizon,n_eligible_base,n_censored_before_h,base_event_rate,worst_case_rate,best_case_rate,sensitivity_range
+12h,215,6,0.2279,0.2489,0.2217,0.0271
+24h,196,25,0.3214,0.3982,0.2851,0.1131
+48h,166,55,0.3976,0.5475,0.2986,0.2489

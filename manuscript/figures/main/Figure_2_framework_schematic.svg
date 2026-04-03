@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1850"
+   height="980"
+   viewBox="0 0 1850 980"
+   font-family="Arial, Helvetica, sans-serif"
+   shape-rendering="geometricPrecision"
+   text-rendering="optimizeLegibility"
+   version="1.1"
+   id="svg100"
+   sodipodi:docname="Figure_1_framework.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview100"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.87811119"
+     inkscape:cx="647.98172"
+     inkscape:cy="426.48358"
+     inkscape:window-width="2560"
+     inkscape:window-height="1494"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg100" />
+  <rect
+     width="100%"
+     height="100%"
+     fill="#f8f9fa"
+     id="rect1"
+     x="-0.56940395"
+     y="-1.8505629"
+     style="fill:#ffffff" />
+  <defs
+     id="defs4">
+    <marker
+       id="arrow-blue"
+       viewBox="0 0 10 10"
+       refX="8.8"
+       refY="5"
+       markerWidth="7.5"
+       markerHeight="7.5"
+       orient="auto-start-reverse">
+      <path
+         d="M 0 0 L 10 5 L 0 10 z"
+         fill="#1565C0"
+         id="path1" />
+    </marker>
+    <marker
+       id="arrow-green"
+       viewBox="0 0 10 10"
+       refX="8.8"
+       refY="5"
+       markerWidth="7.5"
+       markerHeight="7.5"
+       orient="auto-start-reverse">
+      <path
+         d="M 0 0 L 10 5 L 0 10 z"
+         fill="#2E7D32"
+         id="path2" />
+    </marker>
+    <marker
+       id="arrow-orange"
+       viewBox="0 0 10 10"
+       refX="8.8"
+       refY="5"
+       markerWidth="7.5"
+       markerHeight="7.5"
+       orient="auto-start-reverse">
+      <path
+         d="M 0 0 L 10 5 L 0 10 z"
+         fill="#E65100"
+         id="path3" />
+    </marker>
+    <marker
+       id="arrow-magenta"
+       viewBox="0 0 10 10"
+       refX="8.8"
+       refY="5"
+       markerWidth="7.5"
+       markerHeight="7.5"
+       orient="auto-start-reverse">
+      <path
+         d="M 0 0 L 10 5 L 0 10 z"
+         fill="#AD1457"
+         id="path4" />
+    </marker>
+  </defs>
+  <g
+     id="Input_Features"
+     transform="translate(325, 35)">
+    <rect
+       width="1200"
+       height="76"
+       rx="10"
+       ry="10"
+       fill="#EAEAEA"
+       stroke="#999999"
+       stroke-width="2"
+       vector-effect="non-scaling-stroke"
+       id="rect4" />
+    <rect
+       x="0"
+       y="0"
+       width="1200"
+       height="26"
+       rx="10"
+       ry="10"
+       fill="#D6D6D6"
+       id="rect5" />
+    <rect
+       x="0"
+       y="13"
+       width="1200"
+       height="13"
+       fill="#D6D6D6"
+       id="rect6" />
+    <text
+       x="600"
+       y="19"
+       font-size="16"
+       font-weight="bold"
+       fill="#333333"
+       text-anchor="middle"
+       id="text6">INPUT FEATURES</text>
+    <rect
+       x="30"
+       y="34"
+       width="260"
+       height="34"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#999999"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect7" />
+    <g
+       transform="translate(45, 38) scale(0.85)"
+       id="g7">
+      <path
+         d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+         fill="none"
+         stroke="#555"
+         stroke-width="2.5"
+         id="path7" />
+    </g>
+    <text
+       x="170"
+       y="56"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text7">Distance / urgency</text>
+    <rect
+       x="320"
+       y="34"
+       width="260"
+       height="34"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#999999"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect8" />
+    <g
+       transform="translate(355, 38) scale(0.85)"
+       id="g9">
+      <path
+         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+         fill="none"
+         stroke="#555"
+         stroke-width="2.5"
+         id="path8" />
+      <path
+         d="M12 12 L16 8"
+         stroke="#555"
+         stroke-width="2.5"
+         fill="none"
+         id="path9" />
+    </g>
+    <text
+       x="460"
+       y="56"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text9">Speed / alignment</text>
+    <rect
+       x="610"
+       y="34"
+       width="260"
+       height="34"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#999999"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect9" />
+    <g
+       transform="translate(640, 38) scale(0.85)"
+       id="g10">
+      <path
+         d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"
+         fill="none"
+         stroke="#555"
+         stroke-width="2.5"
+         stroke-linejoin="round"
+         id="path10" />
+    </g>
+    <text
+       x="750"
+       y="56"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text10">Growth / spread dynamics</text>
+    <rect
+       x="900"
+       y="34"
+       width="270"
+       height="34"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#999999"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect10" />
+    <g
+       transform="translate(935, 38) scale(0.85)"
+       id="g11">
+      <path
+         d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"
+         fill="none"
+         stroke="#555"
+         stroke-width="2.5"
+         id="path11" />
+    </g>
+    <text
+       x="1045"
+       y="56"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text11">Temporal / regime features</text>
+  </g>
+  <g
+     id="Routing_Blue">
+    <path
+       d="M 925 111 L 925 145"
+       stroke="#1565C0"
+       stroke-width="3"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="path12" />
+    <path
+       d="M 210 145 L 1360 145"
+       stroke="#1565C0"
+       stroke-width="3"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="path13" />
+    <path
+       d="M 210 145 L 210 186"
+       stroke="#1565C0"
+       stroke-width="3"
+       fill="none"
+       marker-end="url(#arrow-blue)"
+       vector-effect="non-scaling-stroke"
+       id="path14" />
+    <path
+       d="M 650 145 L 650 186"
+       stroke="#1565C0"
+       stroke-width="3"
+       fill="none"
+       marker-end="url(#arrow-blue)"
+       vector-effect="non-scaling-stroke"
+       id="path15" />
+    <path
+       d="M 1360 145 L 1360 186"
+       stroke="#1565C0"
+       stroke-width="3"
+       fill="none"
+       marker-end="url(#arrow-blue)"
+       vector-effect="non-scaling-stroke"
+       id="path16" />
+  </g>
+  <g
+     id="Routing_Green_Injection">
+    <path
+       d="M 370 280 L 416 280"
+       stroke="#2E7D32"
+       stroke-width="2.2"
+       stroke-dasharray="8 6"
+       fill="none"
+       marker-end="url(#arrow-green)"
+       vector-effect="non-scaling-stroke"
+       id="path17" />
+    <path
+       d="M 370 260 L 395 260 L 395 170 L 920 170 L 920 240 L 946 240"
+       stroke="#2E7D32"
+       stroke-width="2.2"
+       stroke-dasharray="8 6"
+       fill="none"
+       marker-end="url(#arrow-green)"
+       vector-effect="non-scaling-stroke"
+       id="path18" />
+  </g>
+  <g
+     id="Routing_B_to_C">
+    <path
+       d="m 880.82611,341.80764 h 68.27436"
+       stroke="#1565c0"
+       stroke-width="2.441"
+       fill="none"
+       marker-end="url(#arrow-blue)"
+       vector-effect="non-scaling-stroke"
+       id="path19" />
+    <text
+       x="915"
+       y="322"
+       font-size="11"
+       fill="#1565C0"
+       font-weight="bold"
+       text-anchor="middle"
+       id="text19">Level-1</text>
+    <text
+       x="914.66882"
+       y="331.84964"
+       font-size="10.7611px"
+       fill="#1565c0"
+       font-weight="bold"
+       text-anchor="middle"
+       id="text20"
+       transform="scale(1.0001498,0.99985024)"
+       style="stroke-width:0.978275">meta-features</text>
+  </g>
+  <g
+     id="Routing_B_to_D">
+    <path
+       d="M 650 455 L 650 506"
+       stroke="#1565C0"
+       stroke-width="2.6"
+       fill="none"
+       marker-end="url(#arrow-blue)"
+       vector-effect="non-scaling-stroke"
+       id="path20" />
+    <text
+       x="660"
+       y="485"
+       font-size="12"
+       fill="#1565C0"
+       font-weight="bold"
+       text-anchor="start"
+       id="text21">survival CDF outputs</text>
+  </g>
+  <g
+     id="Module_A"
+     transform="translate(50, 190)">
+    <rect
+       width="320"
+       height="160"
+       rx="10"
+       ry="10"
+       fill="#E8F5E9"
+       stroke="#2E7D32"
+       stroke-width="2.2"
+       vector-effect="non-scaling-stroke"
+       id="rect21" />
+    <rect
+       width="320"
+       height="40"
+       rx="10"
+       ry="10"
+       fill="#2E7D32"
+       id="rect22" />
+    <rect
+       x="0"
+       y="20"
+       width="320"
+       height="20"
+       fill="#2E7D32"
+       id="rect23" />
+    <text
+       x="160"
+       y="26"
+       font-size="18"
+       font-weight="bold"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text23">Module A: Gate Prior Estimation</text>
+    <text
+       x="135"
+       y="85"
+       font-size="16"
+       font-weight="bold"
+       fill="#111"
+       text-anchor="middle"
+       id="text24">Logistic regression</text>
+    <text
+       x="135"
+       y="125"
+       font-size="15"
+       fill="#111"
+       text-anchor="middle"
+       id="text25">Generate OOF gate prior</text>
+    <circle
+       cx="275"
+       cy="80"
+       r="16"
+       fill="#A5D6A7"
+       stroke="#2E7D32"
+       stroke-width="2"
+       vector-effect="non-scaling-stroke"
+       id="circle25" />
+    <circle
+       cx="305"
+       cy="80"
+       r="6"
+       fill="#A5D6A7"
+       stroke="#2E7D32"
+       stroke-width="2"
+       vector-effect="non-scaling-stroke"
+       id="circle26" />
+    <path
+       d="M 275 80 L 305 80"
+       stroke="#2E7D32"
+       stroke-width="2"
+       vector-effect="non-scaling-stroke"
+       id="path26" />
+    <text
+       x="290"
+       y="115"
+       font-size="13"
+       fill="#2E7D32"
+       font-weight="bold"
+       text-anchor="middle"
+       id="text26">gate prior</text>
+  </g>
+  <g
+     id="Module_B"
+     transform="translate(420, 190)">
+    <rect
+       width="460"
+       height="265"
+       rx="10"
+       ry="10"
+       fill="#E3F2FD"
+       stroke="#1565C0"
+       stroke-width="2.4"
+       vector-effect="non-scaling-stroke"
+       id="rect26" />
+    <rect
+       width="460"
+       height="40"
+       rx="10"
+       ry="10"
+       fill="#1565C0"
+       id="rect27" />
+    <rect
+       x="0"
+       y="20"
+       width="460"
+       height="20"
+       fill="#1565C0"
+       id="rect28" />
+    <text
+       x="230"
+       y="26"
+       font-size="18"
+       font-weight="bold"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text28">Module B: Dual Survival Backbone</text>
+    <rect
+       x="30"
+       y="65"
+       width="220"
+       height="80"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#1565C0"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect29" />
+    <text
+       x="140"
+       y="100"
+       font-size="16"
+       font-weight="bold"
+       fill="#111"
+       text-anchor="middle"
+       id="text29">XGBoost AFT ensemble</text>
+    <text
+       x="140"
+       y="125"
+       font-size="13"
+       fill="#444"
+       text-anchor="middle"
+       id="text30">(normal / logistic / extreme value)</text>
+    <rect
+       x="290"
+       y="65"
+       width="140"
+       height="80"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#1565C0"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect30" />
+    <text
+       x="360"
+       y="95"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text31">CDF conversions</text>
+    <text
+       x="360"
+       y="115"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text32">&amp; raw log-time</text>
+    <text
+       x="360"
+       y="135"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text33">predictions</text>
+    <path
+       d="M 250 105 L 286 105"
+       stroke="#1565C0"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-blue)"
+       vector-effect="non-scaling-stroke"
+       id="path33" />
+    <rect
+       x="30"
+       y="165"
+       width="400"
+       height="60"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#1565C0"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect33" />
+    <text
+       x="230"
+       y="193"
+       font-size="15"
+       fill="#111"
+       text-anchor="middle"
+       id="text34">XGBoost Cox branch with</text>
+    <text
+       x="230"
+       y="213"
+       font-size="15"
+       fill="#111"
+       text-anchor="middle"
+       id="text35">rank-normalisation [0,1] &amp; risk scores</text>
+    <text
+       x="230"
+       y="244"
+       font-size="16"
+       font-weight="bold"
+       fill="#111"
+       text-anchor="middle"
+       id="text36">Survival-informed meta-features + risk scores</text>
+  </g>
+  <g
+     id="Module_C"
+     transform="translate(950, 190)">
+    <rect
+       width="818.59283"
+       height="265.00204"
+       rx="9.9828396"
+       ry="10.000077"
+       fill="#fff8e1"
+       stroke="#e65100"
+       stroke-width="2.4"
+       vector-effect="non-scaling-stroke"
+       id="rect36"
+       x="1.4081775"
+       y="-0.0010254262" />
+    <rect
+       width="820"
+       height="40"
+       rx="10"
+       ry="10"
+       fill="#E65100"
+       id="rect37" />
+    <rect
+       x="0"
+       y="20"
+       width="820"
+       height="20"
+       fill="#E65100"
+       id="rect38" />
+    <text
+       x="410"
+       y="26"
+       font-size="18"
+       font-weight="bold"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text38">Module C: Calibrated Horizon Heads</text>
+    <rect
+       x="25"
+       y="60"
+       width="130"
+       height="190"
+       rx="6"
+       ry="6"
+       fill="#FFECB3"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect39" />
+    <text
+       x="90"
+       y="85"
+       font-size="16"
+       font-weight="bold"
+       fill="#111"
+       text-anchor="middle"
+       id="text39">12 h</text>
+    <rect
+       x="45"
+       y="105"
+       width="90"
+       height="70"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect40" />
+    <text
+       x="90"
+       y="130"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text40">Train</text>
+    <text
+       x="90"
+       y="148"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text41">LR, GBC,</text>
+    <text
+       x="90"
+       y="166"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text42">HGB</text>
+    <rect
+       x="45"
+       y="200"
+       width="90"
+       height="40"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect42" />
+    <text
+       x="90"
+       y="220"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text43">Beta</text>
+    <text
+       x="90"
+       y="235"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text44">Calibration</text>
+    <path
+       d="M 90 175 L 90 196"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path44" />
+    <rect
+       x="180"
+       y="60"
+       width="300"
+       height="190"
+       rx="6"
+       ry="6"
+       fill="#FFECB3"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect44" />
+    <text
+       x="330"
+       y="85"
+       font-size="16"
+       font-weight="bold"
+       fill="#111"
+       text-anchor="middle"
+       id="text45">24 h</text>
+    <rect
+       x="195"
+       y="105"
+       width="60"
+       height="70"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect45" />
+    <text
+       x="225"
+       y="135"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text46">IPCW</text>
+    <text
+       x="225"
+       y="155"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text47">Branch</text>
+    <rect
+       x="270"
+       y="105"
+       width="100"
+       height="70"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect47" />
+    <text
+       x="320"
+       y="130"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text48">Train</text>
+    <text
+       x="320"
+       y="148"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text49">LR, GBC,</text>
+    <text
+       x="320"
+       y="166"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text50">HGB</text>
+    <rect
+       x="385"
+       y="105"
+       width="80"
+       height="70"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect50" />
+    <text
+       x="425"
+       y="122"
+       font-size="12"
+       fill="#333"
+       text-anchor="middle"
+       id="text51">Simple</text>
+    <text
+       x="425"
+       y="137"
+       font-size="12"
+       fill="#333"
+       text-anchor="middle"
+       id="text52">distance</text>
+    <text
+       x="426.00656"
+       y="149.33258"
+       font-size="12px"
+       fill="#333333"
+       text-anchor="middle"
+       id="text53">branch</text>
+    <text
+       x="426.99588"
+       y="161.46326"
+       font-size="10px"
+       fill="#333333"
+       text-anchor="middle"
+       id="text54">[ETA, log d,</text>
+    <text
+       x="426.7356"
+       y="172.39967"
+       font-size="10px"
+       fill="#333333"
+       text-anchor="middle"
+       id="text55">1/d]</text>
+    <rect
+       x="268"
+       y="200"
+       width="105"
+       height="40"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect55" />
+    <text
+       x="320"
+       y="220"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text56">Beta</text>
+    <text
+       x="320"
+       y="235"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text57">Calibration</text>
+    <path
+       d="M 225 175 L 225 190 L 320 190 L 320 196"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path57" />
+    <path
+       d="M 320 175 L 320 196"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path58" />
+    <path
+       d="M 425 175 L 425 190 L 320 190 L 320 196"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path59" />
+    <path
+       d="M 255 140 L 266 140"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path60" />
+    <path
+       d="M 385 140 L 374 140"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path61" />
+    <rect
+       x="495"
+       y="60.284702"
+       width="300"
+       height="190"
+       rx="6"
+       ry="6"
+       fill="#ffecb3"
+       stroke="#e65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect61" />
+    <text
+       x="645"
+       y="85"
+       font-size="16"
+       font-weight="bold"
+       fill="#111"
+       text-anchor="middle"
+       id="text61">48 h</text>
+    <rect
+       x="510"
+       y="105"
+       width="60"
+       height="70"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect62" />
+    <text
+       x="540"
+       y="135"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text62">IPCW</text>
+    <text
+       x="540"
+       y="155"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text63">Branch</text>
+    <rect
+       x="585"
+       y="105"
+       width="100"
+       height="70"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect63" />
+    <text
+       x="635"
+       y="130"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text64">Train</text>
+    <text
+       x="635"
+       y="148"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text65">LR, GBC,</text>
+    <text
+       x="635"
+       y="166"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text66">HGB</text>
+    <rect
+       x="700"
+       y="105"
+       width="80"
+       height="70"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect66" />
+    <text
+       x="740"
+       y="122"
+       font-size="12"
+       fill="#333"
+       text-anchor="middle"
+       id="text67">Simple</text>
+    <text
+       x="740"
+       y="137"
+       font-size="12"
+       fill="#333"
+       text-anchor="middle"
+       id="text68">distance</text>
+    <text
+       x="740.42706"
+       y="150.00708"
+       font-size="12px"
+       fill="#333333"
+       text-anchor="middle"
+       id="text69">branch</text>
+    <text
+       x="740.71173"
+       y="162.01418"
+       font-size="10px"
+       fill="#333333"
+       text-anchor="middle"
+       id="text70">[ETA, log d,</text>
+    <text
+       x="740.28473"
+       y="172.72948"
+       font-size="10px"
+       fill="#333333"
+       text-anchor="middle"
+       id="text71">1/d]</text>
+    <rect
+       x="583"
+       y="200"
+       width="105"
+       height="40"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#E65100"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect71" />
+    <text
+       x="635"
+       y="220"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text72">Beta</text>
+    <text
+       x="635"
+       y="235"
+       font-size="14"
+       fill="#111"
+       text-anchor="middle"
+       id="text73">Calibration</text>
+    <path
+       d="M 540 175 L 540 190 L 635 190 L 635 196"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path73" />
+    <path
+       d="M 635 175 L 635 196"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path74" />
+    <path
+       d="M 740 175 L 740 190 L 635 190 L 635 196"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path75" />
+    <path
+       d="M 570 140 L 581 140"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path76" />
+    <path
+       d="M 700 140 L 689 140"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path77" />
+  </g>
+  <g
+     id="Routing_Orange">
+    <path
+       d="M 1040 455 L 1040 480 L 1360 480 L 1360 506"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       marker-end="url(#arrow-orange)"
+       vector-effect="non-scaling-stroke"
+       id="path78" />
+    <path
+       d="M 1280 455 L 1280 480"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="path79" />
+    <path
+       d="M 1595 455 L 1595 480 L 1360 480"
+       stroke="#E65100"
+       stroke-width="2.2"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="path80" />
+  </g>
+  <g
+     id="Module_D"
+     transform="translate(300, 510)">
+    <rect
+       width="1200"
+       height="150"
+       rx="10"
+       ry="10"
+       fill="#FCE4EC"
+       stroke="#AD1457"
+       stroke-width="2.4"
+       vector-effect="non-scaling-stroke"
+       id="rect80" />
+    <rect
+       width="1200"
+       height="40"
+       rx="10"
+       ry="10"
+       fill="#AD1457"
+       id="rect81" />
+    <rect
+       x="0"
+       y="20"
+       width="1200"
+       height="20"
+       fill="#AD1457"
+       id="rect82" />
+    <text
+       x="600"
+       y="26"
+       font-size="18"
+       font-weight="bold"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text82">Module D: Uniform-Shrinkage Simplex Stacking + Monotone Fusion</text>
+    <rect
+       x="30"
+       y="55"
+       width="280"
+       height="80"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#AD1457"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect83" />
+    <text
+       x="45"
+       y="75"
+       font-size="15"
+       font-weight="bold"
+       fill="#111"
+       id="text83">Constraints:</text>
+    <text
+       x="45"
+       y="95"
+       font-size="14"
+       fill="#111"
+       id="text84">• Non-negative weights</text>
+    <text
+       x="45"
+       y="112"
+       font-size="14"
+       fill="#111"
+       id="text85">• Shrinkage toward uniform</text>
+    <text
+       x="45"
+       y="129"
+       font-size="14"
+       fill="#111"
+       id="text86">• Sum-to-one</text>
+    <path
+       d="M 310 95 L 340 95"
+       stroke="#AD1457"
+       stroke-width="2.6"
+       fill="none"
+       marker-end="url(#arrow-magenta)"
+       vector-effect="non-scaling-stroke"
+       id="path86" />
+    <rect
+       x="350"
+       y="55"
+       width="220"
+       height="80"
+       rx="6"
+       ry="6"
+       fill="#ffffff"
+       stroke="#AD1457"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect86" />
+    <text
+       x="460"
+       y="90"
+       font-size="15"
+       fill="#111"
+       text-anchor="middle"
+       id="text87">Stacking matrix,</text>
+    <text
+       x="460"
+       y="112"
+       font-size="15"
+       fill="#111"
+       text-anchor="middle"
+       id="text88">Simplex weight computation</text>
+    <path
+       d="M 570 95 L 600 95"
+       stroke="#AD1457"
+       stroke-width="2.6"
+       fill="none"
+       marker-end="url(#arrow-magenta)"
+       vector-effect="non-scaling-stroke"
+       id="path88" />
+    <rect
+       x="610"
+       y="55"
+       width="560"
+       height="80"
+       rx="6"
+       ry="6"
+       fill="#F8BBD0"
+       stroke="#AD1457"
+       stroke-width="1.5"
+       vector-effect="non-scaling-stroke"
+       id="rect88" />
+    <g
+       transform="translate(640, 75)"
+       id="g90">
+      <path
+         d="M 0 35 Q 20 -10 40 35"
+         fill="rgba(173,20,87,0.3)"
+         stroke="#AD1457"
+         stroke-width="2"
+         id="path89" />
+      <path
+         d="M 50 25 L 70 25"
+         stroke="#AD1457"
+         stroke-width="2"
+         marker-end="url(#arrow-magenta)"
+         id="path90" />
+    </g>
+    <text
+       x="890"
+       y="75"
+       font-size="15"
+       font-weight="bold"
+       fill="#111"
+       text-anchor="middle"
+       id="text90">Monotone Fusion</text>
+    <text
+       x="890"
+       y="105"
+       font-size="18"
+       font-weight="bold"
+       fill="#111"
+       text-anchor="middle"
+       id="text91">P(T≤12h) ≤ P(T≤24h) ≤ P(T≤48h)</text>
+    <text
+       x="890"
+       y="125"
+       font-size="14"
+       font-weight="bold"
+       fill="#666666"
+       text-anchor="middle"
+       id="text92">clip to [0.001, 0.999]</text>
+  </g>
+  <path
+     d="M 900 660 L 900 716"
+     stroke="#AD1457"
+     stroke-width="2.6"
+     fill="none"
+     marker-end="url(#arrow-magenta)"
+     vector-effect="non-scaling-stroke"
+     id="path92" />
+  <g
+     id="Final_Output"
+     transform="translate(400, 720)">
+    <rect
+       width="1000"
+       height="120"
+       rx="10"
+       ry="10"
+       fill="#EAEAEA"
+       stroke="#999999"
+       stroke-width="2"
+       vector-effect="non-scaling-stroke"
+       id="rect92" />
+    <text
+       x="170"
+       y="55"
+       font-size="18"
+       font-weight="bold"
+       fill="#111"
+       text-anchor="middle"
+       id="text93">Final coherent probabilities</text>
+    <text
+       x="170"
+       y="80"
+       font-size="16"
+       fill="#333"
+       text-anchor="middle"
+       id="text94">+ risk signal</text>
+    <text
+       x="410"
+       y="45"
+       font-size="14"
+       fill="#333"
+       text-anchor="middle"
+       id="text95">P(T≤12h)</text>
+    <polyline
+       points="360,90 360,55"
+       stroke="#333"
+       stroke-width="2"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="polyline95" />
+    <polyline
+       points="360,90 460,90"
+       stroke="#333"
+       stroke-width="2"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="polyline96" />
+    <path
+       d="M 360 87 Q 385 45 440 80"
+       fill="none"
+       stroke="#666"
+       stroke-width="2.5"
+       vector-effect="non-scaling-stroke"
+       id="path96" />
+    <text
+       x="540"
+       y="45"
+       font-size="14"
+       fill="#333"
+       text-anchor="middle"
+       id="text96">P(T≤24h)</text>
+    <polyline
+       points="490,90 490,55"
+       stroke="#333"
+       stroke-width="2"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="polyline97" />
+    <polyline
+       points="490,90 590,90"
+       stroke="#333"
+       stroke-width="2"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="polyline98" />
+    <path
+       d="M 490 87 Q 515 50 570 55"
+       fill="none"
+       stroke="#666"
+       stroke-width="2.5"
+       vector-effect="non-scaling-stroke"
+       id="path98" />
+    <text
+       x="670"
+       y="45"
+       font-size="14"
+       fill="#333"
+       text-anchor="middle"
+       id="text98">P(T≤48h)</text>
+    <polyline
+       points="620,90 620,55"
+       stroke="#333"
+       stroke-width="2"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="polyline99" />
+    <polyline
+       points="620,90 720,90"
+       stroke="#333"
+       stroke-width="2"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       id="polyline100" />
+    <path
+       d="M 620 87 Q 650 45 700 45"
+       fill="none"
+       stroke="#666"
+       stroke-width="2.5"
+       vector-effect="non-scaling-stroke"
+       id="path100" />
+    <text
+       x="850"
+       y="65"
+       font-size="16"
+       fill="#111"
+       text-anchor="middle"
+       id="text100">Risk signal / decision support</text>
+  </g>
+</svg>

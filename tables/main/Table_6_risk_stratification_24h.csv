@@ -1,0 +1,4 @@
+﻿"risk_tercile","n","observed_event_rate_pct","wilson_ci_95"
+"Low","65","0","[0.0, 5.6]"
+"Medium","66","4.5","[1.6, 12.5]"
+"High","65","92.3","[83.2, 96.7]"

@@ -1,0 +1,5 @@
+﻿Validation strategy,n_folds,C_mean,C_SD,IBS_mean,IBS_SD,Delta_C,Delta_IBS,Notes
+"Full model — nested stratified CV (Table 2, Uno-C)",5,0.941,—,0.041,—,ref,ref,Full multi-module architecture; see Table 2 in manuscript
+Lean AFT — standard stratified CV (supplementary baseline),5,0.9318,0.0107,0.1352,0.0305,ref,ref,"Lean AFT (depth=3, single model); supplementary robustness check"
+Lean AFT — proxy incident-grouped CV (feature-space clustering),5,0.9283,0.0289,0.1541,0.0681,-0.0035,0.0189,Delta relative to standard CV (same lean model)
+Lean AFT — temporal blocked CV (Leave-One-Month-Out),6,0.9371,0.037,0.1195,0.0389,—,—,Conservative temporal block; N-weighted mean C = 0.9353; months with n < 10 excluded
