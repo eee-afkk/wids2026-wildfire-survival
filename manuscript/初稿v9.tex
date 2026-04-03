@@ -2,7 +2,7 @@
 %=================================================================
 % Fix for older pdfTeX / xcolor incompatibility
 % \PassOptionsToPackage{dvips}{xcolor}  % removed: conflicts with pdftex driver
-\documentclass[fire,article,submit,pdftex,moreauthors]{../Definitions/mdpi}
+\documentclass[fire,article,submit,pdftex]{../Definitions/mdpi}
 
 % Additional packages
 % ---------------------------------------------------------------
@@ -24,8 +24,8 @@
 % ---------------------------------------------------------------
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\setlength{\headheight}{18.19pt}
-\addtolength{\topmargin}{-6.19pt}
+\setlength{\headheight}{20.0pt}
+\addtolength{\topmargin}{-8.0pt}
 \usepackage{amsmath,amssymb}
 % Prevent widow/orphan lines and improve float placement
 \widowpenalty=10000
@@ -62,14 +62,13 @@
 %=================================================================
 \Title{A Survival--Probability Fusion Prototype for Censor-Aware Multi-Horizon Wildfire Threat Forecasting and Decision-Utility Evaluation}
 
-\Author{First Author $^{1,*}$ and Second Author $^{2}$}
-\AuthorNames{First Author and Second Author}
+\Author{ZhengYang Ren $^{1,*}$}
+\AuthorNames{ZhengYang Ren}
 
 \address{%
-$^{1}$ \quad Affiliation 1; first.author@email.com\\
-$^{2}$ \quad Affiliation 2; second.author@email.com}
+$^{1}$ \quad Independent Researcher; d58350215@gmail.com}
 
-\corres{Correspondence: first.author@email.com; Tel.: +XX-XXXX-XXXXXX}
+\corres{Correspondence: d58350215@gmail.com}
 
 %=================================================================
 \abstract{%
@@ -846,9 +845,9 @@ Prospective evaluation in operational early warning settings, integrated with re
 %=================================================================
 \vspace{6pt}
 
-\supplementary{The following supporting information can be downloaded at: \url{www.mdpi.com/xxx/s1}. Table~S0: Complete feature dictionary (name, type, transformation, source). Table~S1: 72~h horizon performance results. Table~S2: Full hyperparameter configurations for all models, including stacking regularisation sensitivity analysis ($\lambda \in \{0.1, 0.5, 1.0, 2.0, 5.0\}$). Table~S3: Two-sided $p$-values for all ablation paired bootstrap comparisons. Table~S4: Fold-level performance metrics (C-index and Brier scores per outer fold). Table~S5: Decision curve analysis net benefit across the full threshold range at 12, 24, and 48~h. Table~S6: Complete feature importance ranking (all features). Table~S7: Practical lean variant comparison with thin-feature configurations. Table~S8: Proxy incident-grouped cross-validation comparison (standard stratified CV vs.\ feature-space clustering GroupKFold; lean AFT model). Table~S9: Informative censoring sensitivity analysis---worst-case/best-case event-rate bounds and Aalen--Johansen competing-risk cumulative incidence by horizon. Table~S10: Leave-one-month-out temporal blocked cross-validation results (lean AFT model). Table~S11: TRIPOD-style data quality summary (missing rates, variable distributions). Figure~S1: Monotonicity verification scatter plots. Figure~S2: Proxy incident-grouped CV comparison---boxplots of C-index and mean Brier score under standard stratified vs.\ grouped cross-validation (43 feature-space proxy groups). Figure~S3: Leave-one-month-out temporal blocked CV---per-month C-index and mean Brier score (months with $n < 10$ excluded); the figure reports unweighted monthly means ($\bar{C} = 0.937$), whereas the main text reports the $N$-weighted mean ($C = 0.935$) to account for differing per-month sample sizes. Figure~S4: Informative censoring sensitivity---worst/best-case event-rate bounds and Kaplan--Meier vs.\ Aalen--Johansen cumulative incidence by horizon. Figure~S5: Kaplan--Meier survival function and event-time vs.\ censoring-time distributions. Figure~S6: Eligible sample size and event rate per prediction horizon. Figure~S7: NIFC WFIGS geographic context---western US wildfire incidents used for supplementary proxy incident grouping (note: the 2026 bar in the annual counts panel may represent a partial year in the downloaded open-data snapshot and should not be interpreted as an anomalous decline).}
+\supplementary{The following supporting information is available in the public repository at \url{https://github.com/eee-afkk/wids2026-wildfire-survival}: Table~S0: Complete feature dictionary (name, type, transformation, source). Table~S1: 72~h horizon performance results. Table~S2: Full hyperparameter configurations for all models, including stacking regularisation sensitivity analysis ($\lambda \in \{0.1, 0.5, 1.0, 2.0, 5.0\}$). Table~S3: Two-sided $p$-values for all ablation paired bootstrap comparisons. Table~S4: Fold-level performance metrics (C-index and Brier scores per outer fold). Table~S5: Decision curve analysis net benefit across the full threshold range at 12, 24, and 48~h. Table~S6: Complete feature importance ranking (all features). Table~S7: Practical lean variant comparison with thin-feature configurations. Table~S8: Proxy incident-grouped cross-validation comparison (standard stratified CV vs.\ feature-space clustering GroupKFold; lean AFT model). Table~S9: Informative censoring sensitivity analysis---worst-case/best-case event-rate bounds and Aalen--Johansen competing-risk cumulative incidence by horizon. Table~S10: Leave-one-month-out temporal blocked cross-validation results (lean AFT model). Table~S11: TRIPOD-style data quality summary (missing rates, variable distributions). Figure~S1: Monotonicity verification scatter plots. Figure~S2: Proxy incident-grouped CV comparison---boxplots of C-index and mean Brier score under standard stratified vs.\ grouped cross-validation (43 feature-space proxy groups). Figure~S3: Leave-one-month-out temporal blocked CV---per-month C-index and mean Brier score (months with $n < 10$ excluded); the figure reports unweighted monthly means ($\bar{C} = 0.937$), whereas the main text reports the $N$-weighted mean ($C = 0.935$) to account for differing per-month sample sizes. Figure~S4: Informative censoring sensitivity---worst/best-case event-rate bounds and Kaplan--Meier vs.\ Aalen--Johansen cumulative incidence by horizon. Figure~S5: Kaplan--Meier survival function and event-time vs.\ censoring-time distributions. Figure~S6: Eligible sample size and event rate per prediction horizon. Figure~S7: NIFC WFIGS geographic context---western US wildfire incidents used for supplementary proxy incident grouping (note: the 2026 bar in the annual counts panel may represent a partial year in the downloaded open-data snapshot and should not be interpreted as an anomalous decline).}
 
-\authorcontributions{Conceptualization, F.A.; methodology, F.A.; software, F.A.; validation, F.A.; formal analysis, F.A.; writing---original draft preparation, F.A.; writing---review and editing, F.A. and S.A.; visualization, F.A.; supervision, S.A. All authors have read and agreed to the published version of the manuscript.}
+\authorcontributions{Conceptualization, Z.R.; methodology, Z.R.; software, Z.R.; validation, Z.R.; formal analysis, Z.R.; investigation, Z.R.; data curation, Z.R.; writing---original draft preparation, Z.R.; writing---review and editing, Z.R.; visualization, Z.R. The author has read and agreed to the published version of the manuscript.}
 
 \funding{This research received no external funding.}
 
@@ -858,7 +857,7 @@ Prospective evaluation in operational early warning settings, integrated with re
 
 \dataavailability{The dataset used in this study is publicly available through the WiDS 2026 Datathon competition platform (\url{https://www.wids.io}). The analysis code and curated supplementary data files are available at \url{https://github.com/eee-afkk/wids2026-wildfire-survival} (DOI to be assigned upon acceptance). All random seeds and environment specifications are documented in the repository README to support reproducibility.}
 
-\conflictsofinterest{The authors declare no conflicts of interest.}
+\conflictsofinterest{The author declares no conflicts of interest.}
 
 \abbreviations{The following abbreviations are used in this manuscript:
 AFT = Accelerated failure time;

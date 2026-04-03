@@ -1,35 +1,31 @@
 # Wildfire Survival Manuscript Package
 
-Curated repository for the manuscript:
+Repository accompanying the manuscript:
 
 **A Survival--Probability Fusion Prototype for Censor-Aware Multi-Horizon Wildfire Threat Forecasting and Decision-Utility Evaluation**
 
-This repository is organized as a manuscript-support package rather than a raw working directory. File names and folder layout follow the final manuscript numbering in `初稿v9`:
+Author: `ZhengYang Ren`  
+Contact: `d58350215@gmail.com`  
+Repository: `https://github.com/eee-afkk/wids2026-wildfire-survival`
 
-- Main figures: `Figure 1` to `Figure 9`
-- Supplementary figures: `Figure S1` to `Figure S7`
-- Main tables: `Table 1` to `Table 9`
-- Supplementary tables: `Table S0` to `Table S11`
+## Overview
 
-The repository URL referenced in the manuscript is:
+This repository is a submission-oriented manuscript package built around the current source-of-truth manuscript version, `manuscript/初稿v9.tex` (Version April 4, 2026). It contains the paper source, the final manuscript-numbered figures and tables, the two analysis entry-point scripts used to generate the reported outputs, and a limited set of raw/support files retained only for provenance and supplementary-material traceability.
 
-`https://github.com/eee-afkk/wids2026-wildfire-survival`
+The project studies censor-aware multi-horizon wildfire threat forecasting using a survival--probability fusion framework that combines an XGBoost AFT survival backbone with horizon-specific direct probability heads, calibration, and monotone fusion. In the current manuscript, the prototype achieves strong discrimination and low probability error on the WiDS Datathon 2026 wildfire task while preserving post-fusion monotonicity across the 12 h, 24 h, and 48 h horizons. The repository is intentionally organized to match manuscript numbering rather than a development-time export order so that journal editors, reviewers, and readers can locate each referenced figure, table, and supporting file directly.
 
-## What Is Included
+## Quick Navigation
 
-- Final manuscript source and compiled PDF
-- Final manuscript-numbered figures and tables
-- Main analysis code and supplementary-analysis code
-- A small set of raw/support CSV files needed to trace how final supplementary files were assembled
-- MDPI/Fire LaTeX class files required to compile the manuscript
-- A manifest mapping final files to their raw sources
-
-## What Is Not Included
-
-- WiDS Datathon raw competition data (`train.csv`, `test.csv`, `metaData.csv`)
-- Downloaded NIFC WFIGS raw perimeter data
-- Local build artifacts and temporary outputs
-- Trained model binaries or cached environments
+- `manuscript/初稿v9.tex`: current manuscript source of truth
+- `manuscript/初稿v9.pdf`: compiled manuscript PDF
+- `manuscript/figures/main/`: final main-text figures (`Figure 1` to `Figure 9`)
+- `manuscript/figures/supplementary/`: final supplementary figures (`Figure S1` to `Figure S7`)
+- `tables/main/`: manuscript-numbered main tables (`Table 1` to `Table 9`)
+- `tables/supplementary/`: manuscript-numbered supplementary tables (`Table S0` to `Table S11`)
+- `code/run_pipeline.py`: main analysis and manuscript-output pipeline
+- `code/supplement_analysis.py`: supplementary analyses and robustness checks
+- `manuscript_file_manifest.md`: source-to-final manifest for figures and tables
+- `docs/data_README.md`: external data requirements and access notes
 
 ## Repository Layout
 
@@ -60,28 +56,30 @@ wids2026-wildfire-survival/
    `- csv/
 ```
 
-## Manuscript Correspondence
+## Alignment with the Manuscript
 
-The curated repository is aligned to the manuscript as follows:
+The repository follows the final numbering used in `初稿v9`:
 
-- `manuscript/figures/main/` contains the final paper figures used in `初稿v9.tex`
-- `manuscript/figures/supplementary/` contains the final supplementary figures `S1` to `S7`
-- `tables/main/` contains numbered CSV versions of main-text tables
-- `tables/supplementary/` contains numbered supplementary tables, including generated files such as `Table_S3_ablation_pvalues.csv` and `Table_S9_informative_censoring_sensitivity.xlsx`
-- `manuscript_file_manifest.md` records each final file and its raw/support source
+- Main figures: `Figure 1` to `Figure 9`
+- Supplementary figures: `Figure S1` to `Figure S7`
+- Main tables: `Table 1` to `Table 9`
+- Supplementary tables: `Table S0` to `Table S11`
+
+This means the curated filenames in `manuscript/figures/` and `tables/` are intentionally different from development-time export names used during earlier drafting. The full provenance mapping is recorded in `manuscript_file_manifest.md`.
 
 ## Code Entry Points
 
-### 1. Main analysis pipeline
+### Main analysis
 
 File: `code/run_pipeline.py`
 
-Purpose:
+Primary responsibilities:
 
 - nested 5 x 5 cross-validation
-- survival-probability fusion model fitting
+- survival--probability fusion model fitting
 - main manuscript figures
-- main manuscript tables and supporting raw outputs
+- main manuscript tables
+- manuscript-aligned support outputs
 
 Typical usage:
 
@@ -89,22 +87,22 @@ Typical usage:
 python code/run_pipeline.py --data-dir /path/to/wids_data --output-dir /path/to/output
 ```
 
-Expected external inputs:
+Required external inputs:
 
 - `train.csv`
 - `test.csv`
 
-### 2. Supplementary analysis pipeline
+### Supplementary analyses
 
 File: `code/supplement_analysis.py`
 
-Purpose:
+Primary responsibilities:
 
 - proxy grouped cross-validation
 - temporal blocked cross-validation
 - informative censoring sensitivity analysis
 - TRIPOD-style data-quality reporting
-- NIFC WFIGS context analyses used for supplementary materials
+- NIFC WFIGS context analyses used in supplementary materials
 
 Typical usage:
 
@@ -112,14 +110,14 @@ Typical usage:
 python code/supplement_analysis.py --train /path/to/train.csv --nifc /path/to/WFIGS_Interagency_Perimeters.csv --output /path/to/output
 ```
 
-Expected external inputs:
+Required external inputs:
 
 - WiDS `train.csv`
 - NIFC WFIGS perimeter CSV downloaded separately
 
-## Reproducibility Notes
+## Reproducibility Snapshot
 
-Main manuscript settings reflected in the repository:
+Repository settings aligned with the current manuscript:
 
 - Python 3.10 environment
 - Outer CV folds: 5
@@ -131,7 +129,7 @@ Main manuscript settings reflected in the repository:
 - Bootstrap resamples: 1000
 - Stacking regularization parameter: `lambda = 1.0`
 
-Primary manuscript results reported in `初稿v9`:
+Key manuscript-reported results reflected in this package:
 
 - Pairwise concordance index proxy: 0.940
 - Uno's IPCW C-index: 0.941
@@ -139,11 +137,28 @@ Primary manuscript results reported in `初稿v9`:
 - Zero post-fusion monotonicity violations
 - 24 h risk-tercile observed event rates: 0.0%, 4.5%, 92.3%
 
-## Data Access
+## Included and Excluded Materials
 
-The WiDS Datathon data are not redistributed here. See `docs/data_README.md` for the required external files and how to obtain them. The supplementary NIFC WFIGS file must also be downloaded separately if you want to rerun `code/supplement_analysis.py`.
+Included:
 
-## Manuscript Build
+- final manuscript source and compiled PDF
+- final manuscript-numbered figures and tables
+- analysis code for the main and supplementary results
+- curated support CSV files retained for provenance
+- MDPI/Fire LaTeX files required for compilation
+
+Not included:
+
+- WiDS Datathon raw competition data (`train.csv`, `test.csv`, `metaData.csv`)
+- downloaded NIFC WFIGS raw perimeter data
+- local build artifacts and temporary outputs
+- trained model binaries or cached virtual environments
+
+## External Data Access
+
+The WiDS Datathon data are not redistributed here. See `docs/data_README.md` for the required external files and access notes. The supplementary NIFC WFIGS file must also be downloaded separately if you want to rerun `code/supplement_analysis.py`.
+
+## Building the Manuscript
 
 From the repository root:
 
@@ -152,20 +167,15 @@ pdflatex -interaction=nonstopmode -halt-on-error -output-directory=manuscript ma
 pdflatex -interaction=nonstopmode -halt-on-error -output-directory=manuscript manuscript/初稿v9.tex
 ```
 
-This compiles the manuscript against `Definitions/` and the curated figure paths in `manuscript/figures/main/`.
+This compiles the manuscript against `Definitions/` and the curated figure paths stored under `manuscript/figures/`.
 
 ## Supplementary-Material Packaging Notes
 
-The repository is already arranged in a journal-friendly supporting-information format:
+The repository is arranged to match common journal supporting-information expectations:
 
 - final numbered files are separated from raw/support files
-- manuscript-ready figures are separated into main and supplementary folders
-- supplementary tables are stored under stable manuscript numbering
+- main and supplementary figures are stored in separate folders
+- supplementary tables use stable manuscript numbering
 - provenance is documented in `manuscript_file_manifest.md`
-- competition data are excluded to avoid redistribution issues
-- build artifacts are intentionally not tracked
-
-Residual caveats:
-
-- the supplementary DOI placeholder in the manuscript remains a publisher-stage item
-- no trained model binaries are archived in this repository
+- restricted external datasets are excluded from redistribution
+- build artifacts are not tracked
