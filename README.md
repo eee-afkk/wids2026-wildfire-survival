@@ -10,7 +10,7 @@ Repository: `https://github.com/eee-afkk/wids2026-wildfire-survival`
 
 ## Overview
 
-This repository is a submission-oriented manuscript package built around the current source-of-truth manuscript version, `manuscript/初稿v9.tex` (Version April 4, 2026). It contains the paper source, the final manuscript-numbered figures and tables, the two analysis entry-point scripts used to generate the reported outputs, and a limited set of raw/support files retained only for provenance and supplementary-material traceability.
+This repository is a submission-oriented manuscript package built around the current source-of-truth manuscript version, `manuscript/初稿v9.tex` (Version April 4, 2026). It contains the paper source, the final manuscript-numbered figures and tables, the core analysis scripts used to generate the reported outputs, and a limited set of raw/support files retained only for provenance and supplementary-material traceability.
 
 The project studies censor-aware multi-horizon wildfire threat forecasting using a survival--probability fusion framework that combines an XGBoost AFT survival backbone with horizon-specific direct probability heads, calibration, and monotone fusion. In the current manuscript, the prototype achieves strong discrimination and low probability error on the WiDS Datathon 2026 wildfire task while preserving post-fusion monotonicity across the 12 h, 24 h, and 48 h horizons. The repository is intentionally organized to match manuscript numbering rather than a development-time export order so that journal editors, reviewers, and readers can locate each referenced figure, table, and supporting file directly.
 
@@ -24,6 +24,7 @@ The project studies censor-aware multi-horizon wildfire threat forecasting using
 - `tables/supplementary/`: manuscript-numbered supplementary tables (`Table S0` to `Table S11`)
 - `code/run_pipeline.py`: main analysis and manuscript-output pipeline
 - `code/supplement_analysis.py`: supplementary analyses and robustness checks
+- `code/plot_figure10.py`: standalone Figure 10 rendering utility for the main-text robustness diagnostics
 - `manuscript_file_manifest.md`: source-to-final manifest for figures and tables
 - `docs/data_README.md`: external data requirements and access notes
 
@@ -46,7 +47,8 @@ wids2026-wildfire-survival/
 |  `- supplementary/
 |- code/
 |  |- run_pipeline.py
-|  `- supplement_analysis.py
+|  |- supplement_analysis.py
+|  `- plot_figure10.py
 |- docs/
 |  |- README.md
 |  |- data_README.md
@@ -113,6 +115,22 @@ Required external inputs:
 
 - WiDS `train.csv`
 - NIFC WFIGS perimeter CSV downloaded separately
+
+### Figure 10 rendering utility
+
+File: `code/plot_figure10.py`
+
+Primary responsibilities:
+
+- renders the main-text robustness diagnostics figure
+- combines grouped-CV discrimination and mean-Brier panels with censoring-sensitivity panels
+- exports manuscript-ready `PDF` and submission-ready `TIFF` assets for `Figure 10`
+
+Typical usage:
+
+```bash
+python code/plot_figure10.py --input_dir /path/to/supplement_output --output_dir /path/to/output
+```
 
 ## Reproducibility Snapshot
 
