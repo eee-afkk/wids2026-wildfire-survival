@@ -10,14 +10,14 @@ Repository: `https://github.com/eee-afkk/wids2026-wildfire-survival`
 
 ## Overview
 
-This repository is a submission-oriented manuscript package built around the current source-of-truth manuscript version, `manuscript/初稿v10.tex` (Version April 4, 2026). It contains the paper source, the final manuscript-numbered figures and tables, the core analysis scripts used to generate the reported outputs, and a limited set of raw/support files retained only for provenance and supplementary-material traceability.
+This repository is a submission-oriented manuscript package built around the current source-of-truth manuscript file, `manuscript/A_Survival_Probability_Fusion_Prototype_for_Censor_Aware_Multi_Horizon_Wildfire_Threat_Forecasting_and_Decision_Utility_Evaluation.tex` (Version April 4, 2026). It contains the paper source, the final manuscript-numbered figures and tables, the core analysis scripts used to generate the reported outputs, and a limited set of raw/support files retained only for provenance and supplementary-material traceability.
 
 The project studies censor-aware multi-horizon wildfire threat forecasting using a survival--probability fusion framework that combines an XGBoost AFT survival backbone with horizon-specific direct probability heads, calibration, and monotone fusion. In the current manuscript, the prototype achieves strong discrimination and low probability error on the WiDS Datathon 2026 wildfire task while preserving post-fusion monotonicity across the 12 h, 24 h, and 48 h horizons. The repository is intentionally organized to match manuscript numbering rather than a development-time export order so that journal editors, reviewers, and readers can locate each referenced figure, table, and supporting file directly.
 
 ## Quick Navigation
 
-- `manuscript/初稿v10.tex`: current manuscript source of truth
-- `manuscript/初稿v10.pdf`: compiled manuscript PDF
+- `manuscript/A_Survival_Probability_Fusion_Prototype_for_Censor_Aware_Multi_Horizon_Wildfire_Threat_Forecasting_and_Decision_Utility_Evaluation.tex`: current manuscript source of truth
+- `manuscript/A_Survival_Probability_Fusion_Prototype_for_Censor_Aware_Multi_Horizon_Wildfire_Threat_Forecasting_and_Decision_Utility_Evaluation.pdf`: compiled manuscript PDF
 - `manuscript/figures/main/`: final main-text figures (`Figure 1` to `Figure 10`)
 - `manuscript/figures/supplementary/`: final supplementary figures (`Figure S1` to `Figure S7`)
 - `tables/main/`: manuscript-numbered main tables (`Table 1` to `Table 9`)
@@ -37,8 +37,8 @@ wids2026-wildfire-survival/
 |- .gitignore
 |- Definitions/
 |- manuscript/
-|  |- 初稿v10.tex
-|  |- 初稿v10.pdf
+|  |- A_Survival_Probability_Fusion_Prototype_for_Censor_Aware_Multi_Horizon_Wildfire_Threat_Forecasting_and_Decision_Utility_Evaluation.tex
+|  |- A_Survival_Probability_Fusion_Prototype_for_Censor_Aware_Multi_Horizon_Wildfire_Threat_Forecasting_and_Decision_Utility_Evaluation.pdf
 |  `- figures/
 |     |- main/
 |     `- supplementary/
@@ -59,7 +59,7 @@ wids2026-wildfire-survival/
 
 ## Alignment with the Manuscript
 
-The repository follows the final numbering used in `初稿v10`:
+The repository follows the final numbering used in the current manuscript:
 
 - Main figures: `Figure 1` to `Figure 10`
 - Supplementary figures: `Figure S1` to `Figure S7`
@@ -182,8 +182,8 @@ The WiDS Datathon data are not redistributed here. See `docs/data_README.md` for
 From the repository root:
 
 ```bash
-pdflatex -interaction=nonstopmode -halt-on-error -output-directory=manuscript manuscript/初稿v10.tex
-pdflatex -interaction=nonstopmode -halt-on-error -output-directory=manuscript manuscript/初稿v10.tex
+pdflatex -interaction=nonstopmode -halt-on-error -output-directory=manuscript manuscript/A_Survival_Probability_Fusion_Prototype_for_Censor_Aware_Multi_Horizon_Wildfire_Threat_Forecasting_and_Decision_Utility_Evaluation.tex
+pdflatex -interaction=nonstopmode -halt-on-error -output-directory=manuscript manuscript/A_Survival_Probability_Fusion_Prototype_for_Censor_Aware_Multi_Horizon_Wildfire_Threat_Forecasting_and_Decision_Utility_Evaluation.tex
 ```
 
 This compiles the manuscript against `Definitions/` and the curated figure paths stored under `manuscript/figures/`.

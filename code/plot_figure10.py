@@ -94,7 +94,7 @@ plt.rcParams.update({
 
 # ---------------------------------------------------------------------------
 # Representative / fallback data  (used when CSV files are absent)
-# These values match the manuscript text figures (Sec. 3.8 in v10):
+# These values match the current manuscript text figures (Sec. 3.8):
 #   Standard CV  C = 0.9318 ± 0.0221   IBS = 0.0612 ± 0.0088
 #   Grouped  CV  C = 0.9283 ± 0.0374   IBS = 0.0694 ± 0.0147
 # Censoring sensitivity ranges: 12h=0.027, 24h=0.113, 48h=0.249
