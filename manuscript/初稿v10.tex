@@ -72,13 +72,14 @@ $^{1}$ \quad Jiaying University, 100 Meisong Road, Meijiang District, Meizhou 51
 
 %=================================================================
 \abstract{%
-Timely wildfire threat-time estimates could support pre-evacuation readiness, yet existing approaches rarely address censoring, multi-horizon coherence, and calibration in one pipeline.
-We developed a survival--probability fusion prototype combining an XGBoost accelerated failure time backbone, horizon-specific heads, post-hoc calibration, and monotone fusion to generate coherent 12, 24, and 48~h threat probabilities.
-Using 221 wildfire--zone encounters from the WiDS Datathon 2026 (69 events, 152 censored), we evaluated the framework with nested five-fold cross-validation and inner cross-fitting.
-The full model achieved a C-index proxy of 0.940, Uno's IPCW C-index of 0.941 (95\% bootstrap CI 0.924--0.959), and a mean Brier score of 0.041, with zero post-fusion monotonicity violations.
-At 24~h, observed event rates across predicted risk terciles were 0.0\%, 4.5\%, and 92.3\%.
-Simpler comparators matched or exceeded the full architecture on some aggregate metrics, while auxiliary robustness checks suggested only modest grouped-validation optimism but greater censoring sensitivity at 48~h.
-The framework is therefore a methodological prototype for censor-aware multi-horizon wildfire threat forecasting; formal incident-grouped and external spatiotemporal validation remain necessary before practical use.
+Wildfire evacuation planning requires calibrated, multi-horizon threat-time probabilities, yet existing prediction approaches rarely handle right censoring, cross-horizon coherence, and probability calibration within a single pipeline.
+We propose a survival--probability fusion framework that integrates an XGBoost accelerated failure time backbone, horizon-specific probability heads, post-hoc beta calibration, and monotone-constrained fusion to produce coherent 12, 24, and 48~h threat probabilities.
+The framework was evaluated on 221 wildfire--zone encounters (69 events, 152 censored; WiDS Datathon 2026) using nested five-fold cross-validation with inner cross-fitting.
+The full model achieved Uno's IPCW C-index of 0.941 (95\% bootstrap CI 0.924--0.959) and a mean Brier score of 0.041.
+Monotone fusion corrected logically incoherent probability sequences in 24.9\% of observations at the 24--48~h transition.
+Risk stratification at 24~h separated observed event rates into 0.0\%, 4.5\%, and 92.3\% across predicted terciles.
+A Random Survival Forest and lean AFT-centred variants matched or exceeded the full architecture on aggregate metrics, indicating that at the present sample size (events-per-variable $\approx$ 2.0), the framework's value is primarily structural rather than performance-based.
+Formal incident-grouped and external spatiotemporal validation remain necessary before operational deployment.
 }
 
 \keyword{wildfire forecasting; evacuation risk; survival analysis; censoring; multi-horizon prediction; calibration; risk stratification; monotone fusion; decision curve analysis}
@@ -90,8 +91,8 @@ The framework is therefore a methodological prototype for censor-aware multi-hor
 \section{Introduction}\label{sec:introduction}
 
 Wildfire risk management increasingly requires not merely a binary ``will fire arrive'' prediction but a probabilistic estimate of \emph{when} a fire will threaten a given evacuation zone.
-Horizon-specific threat probabilities directly inform pre-evacuation readiness decisions: emergency managers need to rank simultaneously threatened zones by time-criticality, stage suppression and evacuation resources ahead of a fire front, and trigger zone-level alerts with sufficient lead time~\cite{Finney2001,Xi2019,Stephens2018}.
-As the frequency, intensity, and spatial extent of large wildfires have increased over the past two decades~\cite{Jain2022,Cunningham2024,Turco2023,Luo2024,Jones2022,Kolden2024,Higuera2021}, there is a corresponding demand for decision-support tools that go beyond distance-based heuristics and provide calibrated, multi-horizon risk signals capable of supporting triage under uncertainty~\cite{Radeloff2023,Tonini2020}.
+Horizon-specific threat probabilities directly inform pre-evacuation readiness: emergency managers must rank simultaneously threatened zones by time-criticality, stage resources ahead of a fire front, and trigger zone-level alerts with sufficient lead time~\cite{Finney2001,Xi2019,Stephens2018}.
+With the frequency, intensity, and spatial extent of large wildfires rising over the past two decades~\cite{Jain2022,Cunningham2024,Turco2023,Luo2024,Jones2022,Kolden2024,Higuera2021}, the demand for calibrated, multi-horizon decision-support tools that go beyond distance-based heuristics has grown correspondingly~\cite{Radeloff2023,Tonini2020}.
 
 Existing approaches to wildfire threat prediction can be broadly grouped into three categories.
 First, physics-informed estimated-time-of-arrival (ETA) models compute arrival times from distance and fire-spread rate~\cite{Finney2001,Cruz2003}, but produce point estimates rather than probabilistic outputs and cannot naturally handle right-censored observations, which arise when monitoring ends before fire arrival.
@@ -99,18 +100,18 @@ Second, single-horizon machine learning classifiers predict a binary outcome at 
 Third, survival analysis approaches---such as Cox proportional-hazards or accelerated failure time (AFT) models---natively handle censoring and produce survival curves from which horizon-specific cumulative incidence probabilities $P(T \leq h)$ can be derived; these probabilities are inherently monotone non-decreasing by construction~\cite{Wiegrebe2024,Taylor2013}.
 However, when \emph{separate} horizon-specific classifiers are trained independently, the resulting probability estimates are not guaranteed to be mutually consistent across horizons, and the survival-derived probabilities may require post-hoc calibration to align with observed event rates at each discrete horizon~\cite{VanCalster2019}.
 
-Several methodological gaps remain open.
-First, right-censored observations are common in wildfire encounter datasets when monitoring ends before fire arrival; ignoring them introduces survivorship bias into model training and evaluation, and the modest sample sizes characteristic of labelled wildfire encounter records further require rigorous cross-validation and regularisation strategies to yield generalisable performance estimates~\cite{Steyerberg2019,Collins2024,Riley2020}.
-Second, operational decision-support requires probability estimates at multiple discrete horizons (e.g., 12, 24, 48~h), and these estimates must be monotonically non-decreasing (i.e., $P(T \leq 12) \leq P(T \leq 24) \leq P(T \leq 48)$) to remain logically coherent across adjacent time windows.
-Third, discrimination alone (ranking zones by relative threat) is insufficient for threshold-based evacuation triggers; absolute probability calibration is necessary for zone-level decision rules to be actionable~\cite{VanCalster2019}.
+Three methodological gaps remain.
+First, right-censored observations are common in wildfire encounter datasets; ignoring them introduces survivorship bias, and the modest sample sizes typical of labelled wildfire records further demand rigorous cross-validation and regularisation~\cite{Steyerberg2019,Collins2024,Riley2020}.
+Second, operational decision-support requires probability estimates at multiple discrete horizons (e.g., 12, 24, 48~h) that are monotonically non-decreasing ($P(T \leq 12) \leq P(T \leq 24) \leq P(T \leq 48)$) to remain logically coherent.
+Third, discrimination alone is insufficient for threshold-based evacuation triggers; absolute probability calibration is necessary for zone-level decision rules to be actionable~\cite{VanCalster2019}.
 
 In this study, we present a survival--probability fusion framework designed to address these gaps within an internally validated decision-support prototype.
-Given the modest sample size available (221 observations, 69 events), the framework is positioned as a methodological contribution demonstrating how censor-aware survival modelling, horizon-targeted probability heads, and monotone enforcement can be integrated within a single pipeline, rather than as a claim of performance superiority over existing methods.
-The contributions of this work are threefold:
+Given the modest sample size (221 observations, 69 events), the framework is positioned as a methodological contribution rather than a claim of performance superiority.
+The contributions are threefold:
 \begin{enumerate}
-    \item A censor-aware multi-horizon prediction framework that unifies an AFT survival backbone with horizon-targeted direct probability heads, post-hoc calibration, and monotone-constrained fusion within a single decision-support pipeline, producing coherent threat-time probabilities at 12, 24, and 48~h---with empirical evidence that explicit monotone enforcement is substantively necessary in stacked multi-horizon setups, correcting logically incoherent probability sequences in approximately 25\% of observations at the 24--48~h transition;
-    \item A leakage-controlled nested cross-validation evaluation protocol with inner cross-fitting that prevents information contamination between meta-feature generation and fusion weight estimation;
-    \item A transparent evaluation including systematic ablation, baseline comparisons against both survival and non-survival alternatives, decision curve analysis demonstrating positive net benefit across a wide threshold range, and a joint post-fusion recalibration sensitivity analysis---with candid reporting of cases where simpler baselines matched or exceeded the full framework.
+    \item A censor-aware multi-horizon prediction framework unifying an AFT survival backbone with horizon-targeted probability heads, post-hoc calibration, and monotone-constrained fusion to produce coherent threat-time probabilities at 12, 24, and 48~h---with empirical evidence that explicit monotone enforcement corrects logically incoherent probability sequences in approximately 25\% of observations at the 24--48~h transition;
+    \item A leakage-controlled nested cross-validation protocol with inner cross-fitting that prevents information contamination between meta-feature generation and fusion weight estimation;
+    \item A transparent evaluation with systematic ablation, baseline comparisons against both survival and non-survival alternatives, and decision curve analysis---including candid reporting of cases where simpler baselines matched or exceeded the full framework.
 \end{enumerate}
 
 \section{Materials and Methods}\label{sec:methods}
@@ -129,10 +130,8 @@ All predictor variables were available at or before the end of the five-hour obs
 
 The primary outcome is the time from the end of the initial five-hour observation window to the fire perimeter entering within 5~km of the evacuation-zone centroid, measured in hours.
 This definition follows the WiDS Datathon 2026 task specification: features are derived from fire behaviour observed during the first five hours after ignition, and the prediction target is whether the fire enters a 5~km radius around the zone centroid within 12, 24, or 48~h of the observation window endpoint (Figure~\ref{fig:timeline}).
-Each observation thus represents a single fire--zone pair, with the analysis unit being one wildfire event paired with one evacuation zone.
 Right censoring occurs when monitoring ends (e.g., fire is contained, observation period lapses) before the fire reaches the 5~km threshold.
-Notably, censoring arising from fire containment may not be fully non-informative in the statistical sense: containment is an intervention that terminates potential zone impact and is likely correlated with fire behaviour covariates rather than being random.
-This represents a departure from the standard assumption of independent right censoring, and its potential effect on survival model estimates should be acknowledged as a limitation~\cite{Steyerberg2019}.
+Notably, censoring from fire containment may not be fully non-informative: containment is an intervention correlated with fire behaviour covariates rather than a random process, departing from the standard independent right-censoring assumption~\cite{Steyerberg2019}.
 
 \begin{figure}[!ht]
 \centering
@@ -205,8 +204,8 @@ The proposed framework consists of four modules (Figure~\ref{fig:framework}):
 \subsubsection{Module A: Gate Prior Estimation}
 
 A logistic regression model is trained on the full feature set to predict a binary event indicator.
-The resulting out-of-fold (OOF) predicted probabilities serve as a \emph{gate prior}---a soft signal capturing the baseline likelihood that a fire will reach the zone---which is subsequently injected as an additional feature into Modules~B and C.
-This provides a soft data-driven summary of overall event likelihood, which may help downstream modules by reducing redundancy among the raw features; its effect is analogous to a stacking-level shrinkage signal, though the degree of regularisation it confers was not independently validated at the present sample size.
+The resulting out-of-fold (OOF) predicted probabilities serve as a \emph{gate prior}---a soft signal capturing the baseline likelihood that a fire will reach the zone---which is injected as an additional feature into Modules~B and C.
+This data-driven summary reduces redundancy among raw features, functioning as a stacking-level shrinkage signal.
 
 \subsubsection{Module B: Dual Survival Backbone}
 
@@ -306,7 +305,7 @@ Thin-feature variants (restricted to the 26 engineered features) were also evalu
 To assess the robustness of model rankings to random-seed variability in cross-validation fold assignment, a multi-seed stability analysis was conducted.
 All core models---Full Model, AFT~+~Cox, AFT~+~Cox~+~Simple, Per-horizon XGBoost, and RSF---were re-evaluated under five distinct random seeds (42, 123, 314, 2024, 7777), each defining a different stratified fold partition.
 Mean and standard deviation of C-index and IBS across seeds are reported as stability indicators.
-This analysis provides a secondary robustness check complementing the supplementary proxy incident-grouped cross-validation (Section~\ref{sec:methods}), which was limited to a lean AFT model due to the absence of verified incident identifiers in the dataset.
+This analysis provides a secondary robustness check complementing the supplementary proxy incident-grouped cross-validation (Section~\ref{sec:validation}), which was limited to a lean AFT model due to the absence of verified incident identifiers in the dataset.
 
 \subsection{Evaluation Metrics}\label{sec:metrics}
 
@@ -377,8 +376,8 @@ Brier @ 48~h                     & 0.027 & [0.009, 0.050] \\
 \end{tabular}
 \end{table}
 
-The concordance index of 0.940 (Uno's IPCW C-index: 0.941) indicates strong pairwise discrimination, with the model showing favourable relative ranking of threat times across wildfire--zone pairs in over 94\% of comparable cases.
-Brier scores were uniformly low across all three horizons, with the 48~h horizon showing the lowest probability error (0.027), followed by 24~h (0.035) and 12~h (0.060).
+The concordance index of 0.940 (Uno's IPCW C-index: 0.941) indicates that the model correctly ranked threat times in over 94\% of comparable wildfire--zone pairs.
+Brier scores were low across all horizons, decreasing from 0.060 at 12~h to 0.027 at 48~h.
 
 \subsection{Calibration and Reliability}\label{sec:calibration}
 
@@ -405,13 +404,13 @@ Horizon-specific calibration metrics are presented in Table~\ref{tab:calibration
     \caption{Reliability diagrams for 12, 24, and 48~h horizons (pre-recalibration, nested OOF). Shaded bands represent Wilson confidence intervals. Histograms show predicted probability distributions. The dashed diagonal indicates perfect calibration.}\label{fig:reliability}
 \end{figure}
 
-Calibration was best at 24~h (slope~=~0.998, essentially at the ideal of 1.0; ECE~=~0.014), consistent with the reliability diagram showing near-perfect alignment with the diagonal.
+Calibration was best at 24~h (slope~=~0.998; ECE~=~0.014), consistent with near-perfect diagonal alignment in the reliability diagram.
 At 48~h, calibration was acceptable (slope~=~1.075, slightly underconfident; ECE~=~0.031).
-The 12~h horizon was the most challenging, with a calibration slope of 0.805 indicating moderate overconfidence, and an ECE of 0.057.
-These results are consistent with the well-known difficulty of calibrating models at shorter, more uncertain horizons; the horizon-wise trends in Brier score, ECE, and calibration slope are summarised in Figure~\ref{fig:calsummary}.
-Notably, the maximum calibration error (MCE) increased with longer horizons (0.556 at 12~h to 0.777 at 48~h), despite improving overall calibration; this reflects sparse high-probability bins at longer horizons where large absolute deviations can occur even when average calibration is good.
-The calibration intercept was positive at 12~h (0.245, indicating underestimation of event probability in the mean) but negative at 24~h ($-$0.061) and 48~h ($-$0.272, indicating overestimation); the monotone fusion constraint likely contributes to the 48~h pattern by propagating probabilities forward.
-From an operational standpoint, the 24~h horizon provides the most reliable absolute probability outputs; the 12~h outputs should be used with caution for threshold-based triggers, and calibration improvement via post-fusion recalibration is assessed as a sensitivity analysis (Section~\ref{sec:recal_results}).
+The 12~h horizon proved the most challenging, with a slope of 0.805 indicating moderate overconfidence and an ECE of 0.057---consistent with the inherent difficulty of calibrating short-horizon predictions.
+Horizon-wise trends in Brier score, ECE, and calibration slope are summarised in Figure~\ref{fig:calsummary}.
+The maximum calibration error (MCE) increased with longer horizons (0.556 at 12~h to 0.777 at 48~h), reflecting sparse high-probability bins where individual deviations can be large even when average calibration is good.
+The calibration intercept shifted from positive at 12~h (0.245, underestimation) to negative at 48~h ($-$0.272, overestimation), a pattern likely amplified by the monotone fusion constraint propagating probabilities forward.
+Operationally, the 24~h horizon provides the most reliable absolute probability outputs; the 12~h outputs require caution for threshold-based triggers, with post-fusion recalibration assessed in Section~\ref{sec:recal_results}.
 
 \begin{figure}[!ht]
 \begin{adjustwidth}{-\extralength}{0cm}
@@ -459,23 +458,20 @@ Prototype         & Full Model               & 0.940 & 0.941 & 0.041 & 0.060 & 0
     \caption{Baseline comparison: (a)~pairwise concordance index proxy and (b)~integrated Brier score proxy. Higher C-index and lower IBS are better.}\label{fig:baseline}
 \end{figure}
 
-The baseline comparison indicates that the full prototype achieved competitive discrimination under internal validation and substantially outperformed the physics-informed ETA-only baseline ($\Delta$C-index = +0.032), but it did not uniformly dominate the stronger alternatives.
-At the present sample size, the framework's value therefore lies primarily in its coherent censor-aware multi-horizon structure rather than in aggregate metric superiority.
-Table~\ref{tab:baseline} organises the models into three functional tiers to clarify this interpretation.
+The full prototype substantially outperformed the physics-informed ETA-only baseline ($\Delta$C-index = +0.032) but did not uniformly dominate the stronger alternatives.
+At this sample size, the framework's value lies in its coherent censor-aware structure rather than aggregate metric superiority.
+Table~\ref{tab:baseline} organises the models into three functional tiers.
 
-Among the \emph{lean AFT-centred variants}, AFT~+~Cox achieved discrimination (C-index: 0.939) close to the full model, confirming the Cox branch's value as a ranking enhancer.
-AFT~+~Cox~+~Simple achieved a lower IBS (0.038) than the full model (0.041), suggesting that the simple distance branch provides a physics-informed anchoring effect on probability error.
-Notably, AFT~Only and AFT~+~Cox yielded numerically identical Brier scores, ECE, and calibration slopes---as expected from the design in Section~\ref{sec:model}, where the Cox branch enters only the ranking signal and does not alter horizon-specific probability estimates.
-Likewise, the AFT~+~Simple variant (described in Section~\ref{sec:lean_variants} but omitted from Table~\ref{tab:baseline} for brevity) yielded numerically identical probability metrics to AFT~+~Cox~+~Simple, differing only in C-index.
+Among the \emph{lean AFT-centred variants}, AFT~+~Cox achieved discrimination (C-index: 0.939) close to the full model.
+AFT~+~Cox~+~Simple achieved lower IBS (0.038 vs.\ 0.041), suggesting that the simple distance branch anchors probability estimates.
+As expected by design, AFT~Only and AFT~+~Cox yielded identical Brier scores and calibration metrics, differing only in C-index---the Cox branch enters only the ranking signal.
 
-Among the \emph{external comparators}, the per-horizon XGBoost baseline achieved the highest C-index (0.942) and a comparable IBS (0.040 vs.\ 0.041), demonstrating that a well-tuned single-model approach without survival structure can match or exceed the full framework in aggregate metrics at this sample size.
-The Random Survival Forest (C-index: 0.940, IBS: 0.032) achieved the lowest probability error of any model tested, substantially outperforming the full model on IBS despite comparable discrimination.
+Among the \emph{external comparators}, per-horizon XGBoost achieved the highest C-index (0.942) with comparable IBS (0.040), demonstrating that a well-tuned single-model approach can match the full framework at this sample size.
+The Random Survival Forest (C-index: 0.940, IBS: 0.032) achieved the lowest probability error of any model tested.
 
-The full model numerically outperformed the AFT-only baseline on discrimination (C-index: 0.940 vs.\ 0.938), though the IBS was slightly higher for the full model (0.041 vs.\ 0.039), consistent with the interpretation that additional stacking modules introduce estimation variance at low EPV.
-From the paired bootstrap analysis (Section~\ref{sec:ablation_results}), the $\Delta$C-index between the full model and AFT-only was +0.002 [$-$0.002, +0.004] ($p = 0.170$), and $\Delta$IBS was $-$0.002 ($p = 0.805$), both non-significant.
-These results reinforce that the framework's present contribution is structural: censor-aware formulation, monotone multi-horizon coherence, and modular extensibility that the per-horizon XGBoost does not provide by construction.
-The comparison with RSF is more nuanced because RSF is itself a censor-aware survival model with inherently monotone CDF-derived probabilities.
-At this data scale, RSF's superior IBS and greater seed stability suggest that a single unified survival model may absorb the available signal more efficiently than the full stacked architecture, while the framework's modular fusion design remains a research-oriented advantage whose practical benefits still require confirmation on larger datasets.
+From the paired bootstrap analysis, the $\Delta$C-index between the full model and AFT-only was +0.002 [$-$0.002, +0.004] ($p = 0.170$), and $\Delta$IBS was $-$0.002 ($p = 0.805$), both non-significant.
+The comparison with RSF is more nuanced: RSF is itself censor-aware with inherently monotone probabilities.
+At this data scale, RSF's superior IBS and greater seed stability suggest that a single unified survival model absorbs the available signal more efficiently than the full stacked architecture, while the framework's modular design remains a research-oriented advantage requiring confirmation on larger datasets.
 
 \subsection{Ablation Study}\label{sec:ablation_results}
 
@@ -511,27 +507,21 @@ Thin Features      & +0.000 [$-$0.006, +0.006] & 0.964 & +0.001 [$-$0.005, +0.00
 \end{table}
 
 Among the modular configurations tested in the ablation study, the complete framework showed a numerically favourable discrimination profile, though external baselines such as per-horizon XGBoost and RSF achieved comparable or superior aggregate metrics (see Section~\ref{sec:baseline_results}).
-The ablation results reveal heterogeneous module contributions:
+The ablation results reveal heterogeneous module contributions.
+Removing the \emph{Cox branch} yielded $\Delta$C-index = +0.000 ($p = 0.892$) and $\Delta$IBS exactly zero ($p < 0.001$), confirming by design that it affects only the ranking signal.
+The \emph{simple distance branch} contributed to both discrimination and probability error ($\Delta$C-index = +0.002, $p = 0.050$; $\Delta$IBS = +0.001, $p = 0.312$).
+The \emph{gate prior} and \emph{IPCW} modules showed limited independent gains; their effects may be absorbed by remaining components or emerge with more data.
 
-The \emph{Cox branch} had a negligible effect on discrimination in this run: removing it yielded a $\Delta$C-index of +0.000 ($p = 0.892$), while $\Delta$IBS was exactly zero ($p < 0.001$), confirming that the Cox branch affects only the risk ranking signal and does not alter horizon-specific probability estimates.
-
-The \emph{simple distance branch} contributed to both discrimination and probability error: $\Delta$C-index = +0.002 ($p = 0.050$), and $\Delta$IBS = +0.001 ($p = 0.312$), suggesting a physics-informed anchoring contribution.
-
-The \emph{gate prior} and \emph{IPCW} modules showed limited independent incremental gains ($\Delta$C-index and $\Delta$IBS both non-significant when each was individually removed).
-This does not necessarily indicate these modules are dispensable---their effect may be absorbed by remaining components or may manifest more clearly in larger samples.
-
-The build-up analysis revealed that AFT~+~Direct exhibited a deficit relative to the full model in C-index ($\Delta = +0.002$, $p = 0.024$), while AFT-only showed a smaller and non-significant deficit ($\Delta = +0.002$, $p = 0.340$).
-This suggests that adding direct heads without the complementary modules (Cox, gate prior, IPCW, simple distance) may introduce variance; the full model recovers from this by incorporating all modules synergistically.
-Consistent with this interpretation, removing direct heads from the full model marginally improved IBS ($\Delta = -0.002$, non-significant, $p = 0.126$), reinforcing the view that direct heads introduce estimation variance that is offset by the remaining modules in the full configuration.
-Among partial configurations, the addition of the Cox branch to AFT~+~Direct reduced the C-index gap relative to the full model ($\Delta$C-index~$= 0.002$, $p = 0.096$), consistent with the Cox branch's role as a discrimination enhancer.
+The build-up analysis revealed that AFT~+~Direct exhibited a significant deficit relative to the full model ($\Delta$C-index = +0.002, $p = 0.024$), while AFT-only showed a comparable but non-significant gap ($\Delta = +0.002$, $p = 0.340$).
+This pattern suggests that direct heads introduce estimation variance that the complementary modules (Cox, gate prior, IPCW, simple distance) compensate for in the full configuration---consistent with the observation that removing direct heads marginally improved IBS ($\Delta = -0.002$, $p = 0.126$).
+Adding the Cox branch to AFT~+~Direct reduced the C-index gap ($p = 0.096$), consistent with its role as a discrimination enhancer.
 
 \subsection{Bootstrap Confidence Intervals}\label{sec:bootstrap}
 
 Bootstrap distributions for the primary metrics are shown in Figure~\ref{fig:bootstrap}.
-The C-index distribution (median~=~0.940, 95\% CI: [0.927,~0.955]) shows tight concentration, indicating stable discrimination.
-The Uno's IPCW C-index distribution (0.941, [0.924,~0.959]) confirms the censoring-adjusted result is consistent with the proxy.
-The IBS proxy distribution (0.041, [0.025,~0.058]) and horizon-specific Brier score distributions confirm low probability error with moderate CI width consistent with the sample size.
-All bootstrap distributions are based on pre-recalibration predictions, ensuring consistency with the primary analysis reported in Table~\ref{tab:primary}.
+The C-index distribution (median~=~0.940, 95\% CI: [0.927,~0.955]) was tightly concentrated, and the Uno's IPCW C-index (0.941, [0.924,~0.959]) confirmed consistent censoring-adjusted discrimination.
+The IBS proxy (0.041, [0.025,~0.058]) and horizon-specific Brier distributions showed low probability error with moderate CI width reflecting the sample size.
+All distributions are based on pre-recalibration predictions.
 
 \begin{figure}[!ht]
 \begin{adjustwidth}{-\extralength}{0cm}
@@ -543,15 +533,10 @@ All bootstrap distributions are based on pre-recalibration predictions, ensuring
 
 \subsection{Risk Stratification and Monotonicity}\label{sec:stratification}
 
-After monotone-constrained fusion (Module~D), zero violations of $P(T \leq h_1) \leq P(T \leq h_2)$ were observed for both the 12~h~$\to$~24~h and 24~h~$\to$~48~h transitions across all 221 observations.
-This result is by construction: Module~D enforces monotonicity via cumulative maximum propagation.
-The more informative diagnostic is the \emph{pre-fusion} violation rate.
-Prior to monotone fusion, the stacked probabilities exhibited zero violations for the 12~h~$\to$~24~h transition and 55/221 (24.9\%) for 24~h~$\to$~48~h.
-The mean absolute adjustment imposed by monotone fusion was 0.002 (max: 0.115) for the 24~h~$\to$~48~h transition.
-These non-trivial violation rates indicate that the independently stacked horizon estimates do not naturally respect temporal ordering, and that the monotone fusion step plays a substantive corrective role at the 24~h~$\to$~48~h transition rather than serving as a minor adjustment.
-The key finding here is not that the framework produces near-monotone learners, but rather that explicit monotone enforcement is demonstrably necessary in stacked multi-horizon setups: without it, approximately one-quarter of observations at the 24--48~h transition would have received logically incoherent probability sequences.
-This underscores the importance of the monotonicity enforcement module in the framework design.
-Scatter plots confirming the post-fusion result are provided in Figure~S1 of the Supplementary Materials.
+After monotone-constrained fusion (Module~D), zero violations of $P(T \leq h_1) \leq P(T \leq h_2)$ remained across all 221 observations---by construction.
+The more informative diagnostic is the \emph{pre-fusion} violation rate: zero violations occurred at the 12~h~$\to$~24~h transition, but 55/221 (24.9\%) at 24~h~$\to$~48~h, with a mean absolute adjustment of 0.002 (max: 0.115).
+Without monotone enforcement, approximately one-quarter of observations would have received logically incoherent probability sequences at the 24--48~h transition, confirming that the enforcement module plays a substantive corrective role rather than serving as a formality.
+Scatter plots are provided in Figure~S1.
 
 Risk stratification based on 24~h predicted probability terciles produced highly separated observed event rates (Table~\ref{tab:stratification}; Figure~\ref{fig:distributions}).
 The low-risk group ($n = 65$) experienced no events within 24~h (0.0\%; 95\% Wilson CI: 0.0--5.6\%), the medium-risk group ($n = 66$) had a 4.5\% event rate (CI: 1.6--12.5\%), and the high-risk group ($n = 65$) experienced events in 92.3\% of cases (CI: 83.2--96.7\%).
@@ -581,14 +566,11 @@ High   & 65 & 92.3 & [83.2, 96.7] \\
 \subsection{Practical Lean Variants and Model Simplification}\label{sec:lean_results}
 
 Table~\ref{tab:baseline} includes the lean AFT-centred variants alongside the external comparators and the full prototype.
-The paired bootstrap analysis comparing the full model against each lean variant yielded the following results:
+Paired bootstrap comparisons yielded non-significant differences for both lean variants: AFT~+~Cox vs.\ Full Model ($\Delta$C-index = +0.001, $p = 0.260$; $\Delta$IBS = $-$0.002, $p = 0.805$) and AFT~+~Cox~+~Simple vs.\ Full Model ($\Delta$C-index = $-$0.001, $p = 0.762$; $\Delta$IBS = $-$0.002, $p = 0.869$), with the latter achieving numerically lower IBS (0.038 vs.\ 0.041).
 
-AFT~+~Cox vs.\ Full Model: $\Delta$C-index = +0.001 [$-$0.002, +0.004] ($p = 0.260$); $\Delta$IBS = $-$0.002 [$-$0.006, +0.003] ($p = 0.805$); both non-significant.
-AFT~+~Cox~+~Simple vs.\ Full Model: $\Delta$C-index = $-$0.001 [$-$0.004, +0.002] ($p = 0.762$); $\Delta$IBS = $-$0.002 [$-$0.007, +0.002] ($p = 0.869$); both non-significant, with the lean variant achieving a numerically lower IBS (0.038 vs.\ 0.041).
-
-These results confirm that the lean AFT-centred variants remain competitive with the full prototype across both discrimination and probability error, and that the additional modules (direct heads, gate prior, IPCW) do not yield statistically significant aggregate gains at the present sample size.
-The Cox branch's contribution was confined to discrimination: AFT~+~Cox and AFT~Only yielded numerically identical Brier scores (0.039) and calibration metrics, as expected by design, differing only in C-index (0.939 vs.\ 0.938).
-Similarly, the simple distance branch improved probability error without affecting discrimination: AFT~+~Cox~+~Simple achieved IBS = 0.038 compared with 0.039 for AFT~+~Cox, while preserving comparable discrimination.
+These results confirm that the additional modules (direct heads, gate prior, IPCW) do not yield statistically significant gains given the available data.
+The Cox branch's contribution was confined to discrimination (C-index 0.939 vs.\ 0.938 for AFT~Only, identical probability metrics).
+The simple distance branch improved probability error without affecting discrimination (IBS = 0.038 vs.\ 0.039 for AFT~+~Cox).
 
 \subsection{Multi-Seed Stability Analysis}\label{sec:stability}
 
@@ -609,13 +591,10 @@ AFT + Cox              & 0.938 $\pm$ 0.003 & 0.040 $\pm$ 0.002 \\
 \end{tabular}
 \end{table}
 
-RSF exhibited the smallest variability across seeds on both metrics (C-index SD = 0.001; IBS SD $<$ 0.001), confirming its status as the most stable model under the present sample size.
-Per-horizon XGBoost was similarly stable (C-index SD = 0.001; IBS SD = 0.001).
-By contrast, the full model and lean AFT-centred variants exhibited greater seed-to-seed variability (C-index SD = 0.003; IBS SD = 0.001--0.002), consistent with the higher estimation variance expected from multi-module stacking on a small dataset.
-
-The per-seed C-index rankings were informative: RSF ranked first or second in four out of five seeds, whereas the full model's rank fluctuated between first and fourth.
-The relative ordering between the full model and the lean AFT-centred variants was unstable, with neither consistently dominating the other across seeds.
-These findings reinforce the conclusion that the performance differences among the survival-based models are within the noise margin at the present sample size, and that RSF represents the most reliable practical comparator.
+RSF exhibited the smallest variability (C-index SD = 0.001; IBS SD $<$ 0.001), followed by per-horizon XGBoost (C-index SD = 0.001; IBS SD = 0.001).
+The full model and lean AFT variants showed greater seed-to-seed variability (C-index SD = 0.003; IBS SD = 0.001--0.002), consistent with higher estimation variance from multi-module stacking on a small dataset.
+RSF ranked first or second in four of five seeds; the full model fluctuated between first and fourth.
+These findings confirm that performance differences among survival-based models fall within the noise margin at $n = 221$.
 
 \subsection{Sensitivity Analysis: Joint Post-Fusion Recalibration}\label{sec:recal_results}
 
@@ -647,34 +626,30 @@ IBS proxy & 0.041 & 0.040 & 0.040 & --- & --- & --- & --- & --- \\
     \caption{Pre- vs.\ post-recalibration comparison: (a)~Brier score, (b)~ECE, and (c)~calibration slope. Grey bars represent pre-recalibration values; coloured bars represent post-recalibration values.}\label{fig:recalibration}
 \end{figure}
 
-Joint post-fusion recalibration improved 12~h short-horizon calibration: the Brier score decreased from 0.060 to 0.058, and the ECE decreased from 0.057 to 0.048.
-The calibration slope moved from 0.805 (overconfident) to 0.964, close to the ideal value of 1.0.
-The mean horizon-wise Brier score was slightly reduced from 0.041 to 0.040.
-
-Importantly, the joint recalibration approach preserved 24~h and 48~h calibration: the 24~h ECE improved from 0.014 to 0.010, and the 48~h ECE was essentially unchanged (0.031 to 0.031).
-By contrast, the legacy 12~h-only temperature scaling produced a more extreme slope correction (1.209, underconfident) and slightly degraded the 24~h ECE (0.019) and 48~h ECE (0.037).
-These results demonstrate that joint post-fusion recalibration can meaningfully improve the weakest horizon without materially degrading others, though the improvement is modest and the recalibration is retained as a sensitivity analysis rather than replacing the primary model.
+Joint post-fusion recalibration reduced the 12~h Brier score from 0.060 to 0.058 and ECE from 0.057 to 0.048, moving the calibration slope from 0.805 to 0.964---close to the ideal.
+The overall IBS proxy decreased from 0.041 to 0.040.
+Crucially, this approach preserved calibration at 24~h and 48~h (24~h ECE improved from 0.014 to 0.010; 48~h ECE unchanged at 0.031).
+The legacy 12~h-only variant over-corrected (slope = 1.209) and slightly degraded 24~h and 48~h ECE, confirming that joint recalibration is preferable for multi-horizon pipelines.
+The improvement is modest, and recalibration is retained as a sensitivity analysis rather than replacing the primary model.
 
 \subsection{Robustness Checks for Validation Bias and Censoring Assumptions}\label{sec:robustness_results}
 
-Because verified wildfire-incident identifiers were unavailable, auxiliary robustness checks were conducted with a simplified lean AFT model to assess whether the primary internal-validation results were materially inflated by split design.
-Under proxy incident-grouped cross-validation, the mean C-index decreased only modestly from 0.9318 $\pm$ 0.0119 under standard stratified CV to 0.9283 $\pm$ 0.0323 under grouped CV, while the mean Brier score increased from 0.1352 $\pm$ 0.0341 to 0.1541 $\pm$ 0.0761 (Supplementary Table~S8).
-The limited average C-index drop suggests that major leakage-driven optimism is unlikely at the present data scale, but the grouped split produced both worse mean Brier score and substantially wider between-fold variability, indicating appreciably greater uncertainty once approximate incident structure is enforced.
-A complementary leave-one-month-out temporal blocked analysis yielded an $N$-weighted mean C-index of 0.935 across the six months with at least 10 eligible observations.
-The three largest holdout months (Jun--Aug; $n = 33$--70) remained within a relatively narrow range ($C = 0.923$--0.943), whereas the smaller March, May, and September holdouts were more variable, including a likely artefactual March estimate of $C = 1.000$.
-These temporal results are therefore supportive rather than definitive evidence against strong time-based overfitting.
+Because verified wildfire-incident identifiers were unavailable, auxiliary robustness checks were conducted with a lean AFT model.
+Under proxy incident-grouped cross-validation, the mean C-index decreased modestly from 0.9318 $\pm$ 0.0119 (standard stratified CV) to 0.9283 $\pm$ 0.0323 (grouped CV), while the mean Brier score increased from 0.1352 $\pm$ 0.0341 to 0.1541 $\pm$ 0.0761 (Supplementary Table~S8).
+The limited C-index drop suggests that major leakage-driven optimism is unlikely, but the grouped split produced worse probability error and substantially wider fold-to-fold variability.
+A leave-one-month-out temporal blocked analysis yielded an $N$-weighted mean C-index of 0.935 across six months with $\geq$10 observations.
+The three largest holdout months (Jun--Aug; $n = 33$--70) fell within $C = 0.923$--0.943, while smaller months were more variable, including a likely artefactual March estimate of $C = 1.000$.
 
-The second robustness question concerns the independent right-censoring assumption.
-Worst-case/best-case event-rate bounds showed sensitivity ranges of 0.027 at 12~h, 0.113 at 24~h, and 0.249 at 48~h, with the 48~h base event rate of 0.398 spanning a plausible range from 0.299 to 0.548 under extreme censoring scenarios (Supplementary Table~S9).
-Thus, short-horizon event-rate estimates appear relatively stable, whereas the 48~h outputs are materially more assumption-sensitive and should be interpreted with greater caution than the 24~h horizon.
-Figure~10 summarises the grouped-validation discrimination and mean-Brier comparisons together with censoring sensitivity; standalone full-page versions are retained as Supplementary Figures~S2 and~S4.
+Regarding the censoring assumption, worst-case/best-case event-rate bounds showed sensitivity ranges of 0.027 at 12~h, 0.113 at 24~h, and 0.249 at 48~h, with the 48~h base event rate spanning 0.299--0.548 under extreme scenarios (Supplementary Table~S9).
+Short-horizon estimates are thus relatively stable, whereas 48~h outputs are materially more assumption-sensitive.
+Figure~\ref{fig:robustness} summarises these diagnostics; standalone versions are in Supplementary Figures~S2 and~S4.
 
 \begin{figure}[!ht]
 \begin{adjustwidth}{-\extralength}{0cm}
     \centering
     \includegraphics[width=\linewidth]{figures/main/Figure_10_robustness_diagnostics.pdf}
 \end{adjustwidth}
-    \caption{Main-text robustness diagnostics derived from auxiliary lean-model checks. (A)~Discrimination (C-index) under standard stratified versus proxy incident-grouped cross-validation. (B)~Mean Brier score under the same validation splits, showing worse probability error and greater variability under grouped splitting. (C)~Sensitivity of horizon-specific event rates to informative-censoring assumptions, shown as worst/best-case ranges around the base event rate; the widest range occurs at 48~h. Standalone full-page versions are provided as Supplementary Figures~S2 and~S4.}\label{fig:robustness}
+    \caption{Main-text robustness diagnostics derived from auxiliary lean-model checks. (a)~Discrimination (C-index) under standard stratified versus proxy incident-grouped cross-validation. (b)~Mean Brier score under the same validation splits, showing worse probability error and greater variability under grouped splitting. (c)~Sensitivity of horizon-specific event rates to informative-censoring assumptions, shown as worst/best-case ranges around the base event rate; the widest range occurs at 48~h. Standalone full-page versions are provided as Supplementary Figures~S2 and~S4.}\label{fig:robustness}
 \end{figure}
 
 \subsection{Decision Curve Analysis and Decision Utility}\label{sec:dca_results}
@@ -704,19 +679,16 @@ Table~\ref{tab:dca_utility} presents decision utility metrics at selected thresh
 \end{tabular}
 \end{table}
 
-The model produced positive net benefit across a wide threshold range at all three horizons, exceeding the ``treat-all'' and ``treat-none'' reference strategies.
-At the 24~h horizon---identified as the best-calibrated---a threshold of 0.3 yielded sensitivity of 0.984, specificity of 0.940, and a net benefit of 0.299, indicating that the model correctly identifies the large majority of threatened zones while maintaining a low false-positive rate.
-The 48~h horizon showed the highest net benefit (0.394 at threshold 0.1), reflecting the higher base rate and near-perfect sensitivity.
-The 12~h horizon, despite its weaker calibration, still provided positive net benefit across thresholds up to approximately 0.8, supporting its use for zone-level triage even if absolute probability thresholds require caution.
-These results indicate that the framework offers measurable decision value beyond what is captured by discrimination and calibration metrics alone.
+The model produced positive net benefit exceeding both ``treat-all'' and ``treat-none'' strategies across a wide threshold range at all three horizons.
+At the best-calibrated 24~h horizon, a threshold of 0.3 yielded sensitivity of 0.984, specificity of 0.940, and net benefit of 0.299.
+The 48~h horizon showed the highest net benefit (0.394 at threshold 0.1), reflecting higher base rates.
+Even the 12~h horizon, despite weaker calibration, maintained positive net benefit up to threshold $\approx$ 0.8, supporting its use for relative triage.
 
 \subsection{Feature Importance}\label{sec:feature_importance}
 
-Gain-based feature importance from the AFT backbone (Table~\ref{tab:feature_importance}) revealed that distance-related features dominated the model.
-Log-distance was the most important predictor (gain~=~20.0), followed by minimum distance to the closest perimeter (10.5) and low temporal resolution of perimeter observations (8.9).
-The top five features accounted for the majority of the total gain, with remaining features contributing incrementally.
-The dominance of distance-related features is physically intuitive: proximity to the fire front is the strongest predictor of whether a zone will be reached within a given time window.
-The prominence of temporal resolution and perimeter count features suggests that data quality indicators also carry predictive information, likely serving as proxies for fire complexity or monitoring intensity.
+Gain-based feature importance from the AFT backbone (Table~\ref{tab:feature_importance}) confirmed that distance-related features dominated: log-distance (gain = 20.0), minimum perimeter distance (10.5), and low temporal resolution (8.9) occupied the top three positions.
+The dominance of distance features is physically intuitive---proximity to the fire front is the strongest predictor of zone-level threat.
+The prominence of temporal resolution and perimeter count suggests that data quality indicators also carry predictive information, likely proxying for fire complexity or monitoring intensity.
 
 \begin{table}[!ht]
 \caption{Top 10 features by AFT gain-based importance.}\label{tab:feature_importance}
@@ -740,122 +712,83 @@ Start month               &  0.71 \\
 
 \section{Discussion}\label{sec:discussion}
 
-This study presented a survival--probability fusion framework for censor-aware multi-horizon wildfire threat forecasting, evaluated as an internally validated decision-support prototype on a dataset whose modest size (221 observations, 69 events, EPV~$\approx$~2.0) constrains the conclusions that can be drawn about the relative merits of the full multi-module architecture.
-The framework demonstrated numerically favourable discrimination (concordance index~=~0.940, Uno-C~=~0.941), low probability error (Brier scores 0.027--0.060 across primary horizons), enforced monotonicity, and strong risk stratification (24~h tercile event rates: 0.0\%, 4.5\%, 92.3\%).
-Calibration quality varied across horizons: the 24~h horizon was well calibrated (slope~=~0.998), the 48~h horizon was slightly underconfident (slope~=~1.075), while the 12~h horizon exhibited moderate overconfidence (slope~=~0.805); joint post-fusion temperature scaling substantially improved the 12~h slope to 0.964 without materially degrading other horizons.
-Importantly, the full model did not outperform all alternatives---a per-horizon XGBoost achieved marginally higher discrimination, a Random Survival Forest achieved substantially lower probability error, and lean AFT-centred variants remained competitive---indicating that at this sample size the framework's value resides in its structural design rather than in demonstrated metric superiority.
-The primary contribution of this work is therefore methodological: the framework provides a principled \emph{architectural template} for combining censor-aware survival modelling with calibrated multi-horizon probability output within a unified decision-support pipeline, and the evaluation transparently characterises both the framework's structural advantages and the conditions under which simpler alternatives may be preferred.
-Accordingly, the present study should not be read as demonstrating full-model superiority, but rather as establishing a structurally coherent prototype and clarifying when simpler alternatives are preferable.
-Under the current low-EPV setting, lean AFT-centred variants offer the most defensible censor-aware reductions of the full architecture, whereas RSF provides the strongest immediate practical benchmark in terms of probability error and stability.
+This study presented a survival--probability fusion framework for censor-aware multi-horizon wildfire threat forecasting, evaluated on a dataset whose modest size (221 observations, 69 events, EPV~$\approx$~2.0) constrains how firmly the full architecture's merits can be established.
+The framework achieved strong discrimination (Uno-C = 0.941), low probability error (Brier 0.027--0.060), enforced monotonicity, and sharp risk stratification (24~h tercile event rates: 0.0\%, 4.5\%, 92.3\%), with calibration quality best at 24~h (slope = 0.998) and weakest at 12~h (slope = 0.805).
+However, the full model did not outperform all alternatives: RSF achieved lower probability error, per-horizon XGBoost achieved marginally higher discrimination, and lean AFT variants remained competitive.
+The primary contribution is therefore methodological: the framework provides an architectural template for combining censor-aware survival modelling with calibrated multi-horizon output, and the evaluation transparently characterises when simpler alternatives are preferable.
 
 \paragraph{Three-tier model roles.}
-More specifically, the models evaluated in this study fall into three functional tiers.
-The \emph{full model} serves as a \emph{methodological prototype}: its value lies in demonstrating the integration of censor-aware survival modelling, horizon-targeted probability heads, monotone enforcement, and modular ablation within a single pipeline.
-The \emph{lean AFT-centred variants} (AFT~+~Cox, AFT~+~Cox~+~Simple) serve as \emph{interim practical alternatives}: they preserve the censor-aware survival formulation and monotone coherence while substantially reducing architectural complexity.
-AFT~+~Cox is more oriented toward ranking (C-index: 0.939), while AFT~+~Cox~+~Simple additionally benefits from physics-informed probability anchoring (IBS: 0.038, lower than the full model's 0.041).
-The \emph{Random Survival Forest} serves as the \emph{strongest practical comparator} at the present sample size: it achieved the lowest IBS (0.032) and the highest stability across repeated random-seed evaluations (C-index SD = 0.001; IBS SD $<$ 0.001).
-RSF is itself censor-aware and produces naturally monotone survival-derived probabilities; the framework's structural distinction from RSF therefore lies in its multi-module fusion architecture and horizon-targeted calibration pipeline, not in censor-awareness or monotonicity per se.
+The models fall into three functional tiers.
+The \emph{full model} is a methodological prototype demonstrating the integration of censor-aware survival modelling, horizon-targeted heads, monotone enforcement, and modular ablation.
+The \emph{lean AFT variants} (AFT~+~Cox, AFT~+~Cox~+~Simple) are interim practical alternatives preserving censor-awareness and monotone coherence at substantially reduced complexity.
+The \emph{Random Survival Forest} is the strongest practical comparator at this data scale, combining the lowest IBS (0.032) with the highest seed-to-seed stability.
+RSF is itself censor-aware with naturally monotone probabilities; the framework's distinction lies in its modular fusion architecture and horizon-targeted calibration pipeline.
 
 \paragraph{Framework design and ablation insights.}
-The integration of survival analysis backbones with calibrated direct probability heads addresses a gap in the wildfire prediction literature.
-Existing wildfire threat models have largely focused on spatial susceptibility mapping at a single time horizon~\cite{Jaafari2019,Gigovic2019,Chen2024wui,Kaur2022} or on physics-based fire-spread simulation~\cite{Finney2001,Cruz2003,Shu2020,Pais2021,Zheng2021}, neither of which produces calibrated multi-horizon probabilities under censoring.
-Evacuation decision support has been studied through community vulnerability assessments and trigger-point analyses~\cite{Dolan2022,Paveglio2019,Alcasena2019}, and time-to-event perspectives have been discussed in the broader wildfire risk literature~\cite{Xi2019,Taylor2013}, but zone-level threat prediction with calibrated multi-horizon probabilistic output under censoring has not been previously addressed.
-The present framework bridges these gaps: the AFT backbone provides a principled time-to-event prior that is naturally censor-aware, while the direct heads contribute horizon-specific probability refinement.
+Existing wildfire threat models have focused on spatial susceptibility mapping at a single horizon~\cite{Jaafari2019,Gigovic2019,Chen2024wui,Kaur2022} or physics-based fire-spread simulation~\cite{Finney2001,Cruz2003,Shu2020,Pais2021,Zheng2021}, neither producing calibrated multi-horizon probabilities under censoring.
+Evacuation decision support has been studied through vulnerability assessments and trigger-point analyses~\cite{Dolan2022,Paveglio2019,Alcasena2019}, and time-to-event perspectives appear in the broader wildfire risk literature~\cite{Xi2019,Taylor2013}, but zone-level threat prediction with calibrated multi-horizon output under censoring has not been previously addressed.
 
-A key empirical finding is that explicit monotone enforcement is demonstrably necessary in stacked multi-horizon setups: prior to fusion, approximately 25\% of observations at the 24--48~h transition exhibited logically incoherent probability sequences, confirming that independently stacked horizon estimates do not naturally respect temporal ordering.
-The ablation results further indicate that the direct heads require the complementary modules to function effectively: the AFT~+~Direct configuration showed a significant C-index deficit relative to the full model ($\Delta$C-index = +0.002, $p = 0.024$), while AFT-only showed a comparable but non-significant deficit ($\Delta$C-index = +0.002, $p = 0.340$), suggesting that direct heads alone may introduce variance that the remaining modules subsequently compensate for.
-This synergistic pattern supports a modular design in which individual component contributions are not strictly additive.
+A key empirical finding is that explicit monotone enforcement is necessary in stacked multi-horizon setups: approximately 25\% of observations at the 24--48~h transition exhibited incoherent probability sequences before fusion.
+The ablation results further show that direct heads require complementary modules to function effectively: AFT~+~Direct showed a significant C-index deficit ($p = 0.024$) while AFT-only showed a non-significant deficit ($p = 0.340$), indicating that direct heads alone introduce variance that the remaining modules compensate for.
+This synergistic pattern supports a modular design where individual contributions are not strictly additive.
 
 \paragraph{Module prioritisation under low EPV.}
-The combined evidence from the ablation study, lean-variant comparison, and multi-seed stability analysis permits a more informed---though still provisional---assessment of module contributions at the present data scale.
-The \emph{Cox branch} showed a negligible independent effect on discrimination in the primary analysis: removing it yielded a $\Delta$C-index of +0.000 ($p = 0.892$), while $\Delta$IBS was exactly zero, confirming that the Cox branch affects only the ranking signal by design; however, the lean-variant comparison showed that adding Cox to AFT improved C-index from 0.938 to 0.939.
-The \emph{simple distance branch} contributed to probability error reduction: AFT~+~Cox~+~Simple achieved IBS = 0.038 compared with 0.039 for AFT~+~Cox, and the ablation w/o Simple Distance reached borderline significance ($\Delta$C-index = +0.002, $p = 0.050$).
-The \emph{gate prior} and \emph{IPCW} modules showed limited independent incremental gains at the current sample size ($\Delta$C-index and $\Delta$IBS both non-significant when individually removed); their effects may be absorbed by remaining components or may manifest more clearly in larger samples.
-The \emph{direct heads} did not demonstrate stable incremental benefit: removing them from the full model marginally improved IBS ($\Delta = -0.002$, $p = 0.126$), reinforcing the interpretation that direct heads introduce estimation variance that is offset by the remaining modules in the full configuration but that may not be justified at the current EPV.
-These results suggest that the most defensible reduced architecture at $\text{EPV} \approx 2.0$ centres on the AFT backbone with optional Cox (for discrimination) and simple distance (for probability anchoring), while the remaining modules should be regarded as extensions whose incremental value requires confirmation on larger datasets.
+Combining evidence from the ablation, lean-variant, and stability analyses, the most defensible reduced architecture at EPV~$\approx$~2.0 centres on the AFT backbone with optional Cox (for discrimination) and simple distance (for probability anchoring).
+The gate prior, IPCW, and direct heads showed limited independent gains at this scale; their incremental value requires confirmation on larger datasets.
 
-\paragraph{Calibration interpretation.}
-The metrics in Table~\ref{tab:calibration} refer to the final fused probabilities after stacking and monotone fusion, not to the individual base heads.
-The 12~h horizon is inherently the most difficult to calibrate, as it covers a short and highly stochastic window; the pre-recalibration slope of 0.805 indicates moderate overconfidence, meaning that threshold-based evacuation triggers at 12~h would benefit from recalibration.
-The 24~h slope of 0.998 is essentially at the ideal and suggests that 24~h probability outputs are directly usable for threshold-based decisions.
-The 48~h slope of 1.075 indicates slight underconfidence; probabilities are marginally conservative.
-A structural factor contributes to the 12~h pattern: the beta calibration in Module~C targets each base head independently, but the subsequent stacking and monotone fusion steps alter the probability distribution.
-Joint post-fusion temperature scaling successfully corrected the 12~h slope to 0.964 while preserving the 24~h and 48~h calibration (Table~\ref{tab:recalibration}), demonstrating that targeted post-fusion recalibration can address the weakest horizon without the cascading degradation seen in the legacy 12~h-only approach.
-This confirms that multi-horizon frameworks require joint recalibration strategies~\cite{NiculescuMizil2005}.
+\paragraph{Calibration and horizon-level deployment readiness.}
+The calibration metrics in Table~\ref{tab:calibration} refer to the final fused probabilities.
+The 12~h horizon is inherently the hardest to calibrate; its slope of 0.805 reflects moderate overconfidence, meaning threshold-based triggers at 12~h require recalibration.
+A structural factor contributes: beta calibration targets each base head independently, but stacking and monotone fusion subsequently reshape the distribution.
+Joint post-fusion temperature scaling corrected the 12~h slope to 0.964 without degrading other horizons (Table~\ref{tab:recalibration}), confirming that multi-horizon frameworks benefit from joint recalibration strategies~\cite{NiculescuMizil2005}.
+The 24~h slope of 0.998 makes it the most promising horizon for threshold-based decisions.
+The 48~h slope of 1.075 indicates slight conservatism, compounded by greater censoring sensitivity (sensitivity range = 0.249).
+Improving 12~h calibration without degrading longer horizons could be further pursued through bidirectional monotone adjustment or soft monotone penalties during stacking optimisation.
 
-\paragraph{Horizon-level deployment readiness.}
-Based on internal validation only, the 24~h horizon (slope~=~0.998) is the most promising for eventual operational use, with near-ideal calibration; the 48~h horizon (slope~=~1.075) may still be useful for longer-lead triage but is more assumption-sensitive because censoring sensitivity is largest at this horizon, as shown in the robustness results above; and the 12~h horizon (slope~=~0.805) exhibits moderate overconfidence that restricts its use to relative ranking or requires post-fusion recalibration before threshold-based triggers.
-Improving 12~h calibration without degrading longer horizons requires addressing the cascading constraint imposed by monotone fusion; the joint post-fusion temperature scaling evaluated in this study (Section~\ref{sec:recal_results}) successfully improved the 12~h slope to 0.964, and further directions include bidirectional monotone adjustment and replacing cumulative-maximum enforcement with a soft monotone penalty during stacking optimisation.
-
-\paragraph{Practical model selection at this data scale.}
-At the present data scale ($n = 221$, 69 events; EPV~$\approx$~2.0), the full framework's architectural advantages---censor-aware formulation, explicit monotone enforcement, modular ablation transparency---did not translate into statistically significant aggregate gains over leaner alternatives ($\Delta$C-index vs.\ AFT-only: $+0.002$, $p = 0.340$; $\Delta$IBS: $-0.002$, $p = 0.390$).
-The lean AFT-centred variants achieved comparable discrimination and probability error with far simpler architectures, while RSF combined the lowest IBS (0.032) with the highest seed-to-seed stability.
-At low EPV, the most defensible interim choices are therefore lean AFT-centred variants when modularity is desired, or RSF when predictive robustness is prioritised; the additional modules in the full architecture should be regarded as research-oriented extensions whose value requires confirmation on larger datasets.
+\paragraph{Practical model selection.}
+At EPV~$\approx$~2.0, the full framework's architectural advantages did not translate into significant aggregate gains over leaner alternatives ($\Delta$C-index vs.\ AFT-only: $+0.002$, $p = 0.340$; $\Delta$IBS: $-0.002$, $p = 0.390$).
+The most defensible interim choices are lean AFT variants when modularity is desired, or RSF when predictive robustness is prioritised.
 
 \paragraph{Validation and censoring robustness.}
-The auxiliary robustness checks reported in the Results section are supportive but not definitive.
-The proxy incident-grouped analysis showed only a modest mean C-index decrease relative to standard stratified CV, suggesting that major leakage-driven inflation is unlikely, yet the grouped split also worsened mean Brier score and produced substantially wider between-fold variability, indicating greater uncertainty once approximate incident structure is enforced.
-Temporal blocking produced similar discrimination in the three largest fire-season holdout months, but the smaller March, May, and September subsets remained unstable.
-Most importantly, informative-censoring sensitivity increased monotonically with horizon length, and the 48~h event-rate estimate spanned 29.9\%--54.8\% under worst/best-case assumptions.
-This strengthens the interpretation that 24~h is the most defensible operational horizon at present, whereas 48~h probabilities are informative but more assumption-sensitive.
+The proxy incident-grouped analysis showed a modest mean C-index decrease relative to standard stratified CV, suggesting that major leakage-driven inflation is unlikely, though the grouped split worsened mean Brier score and widened fold-to-fold variability.
+Temporal blocking produced similar discrimination in the three largest fire-season months (Jun--Aug), but smaller holdouts remained unstable.
+Informative-censoring sensitivity increased monotonically with horizon length: the 48~h event-rate estimate spanned 29.9\%--54.8\% under extreme assumptions, reinforcing 24~h as the most defensible operational horizon.
 
-\paragraph{Illustrative operational scenario.}
-For example, a wildfire--zone pair at 3200~m with a closing speed of 400~m/h and growth rate of 50~ha/h would yield fused probabilities of approximately $P(T \leq 12) = 0.72$, $P(T \leq 24) = 0.91$, $P(T \leq 48) = 0.95$, placing it in the high-risk tercile and supporting immediate pre-evacuation preparation based on the better-calibrated longer horizons; the 12~h probability would serve only for relative prioritisation among simultaneously threatened zones.
-
-\paragraph{Practical implications for wildfire management.}
-The risk stratification capability may represent the most actionable contribution of this work, as it does not depend on absolute probability calibration.
-The 24~h tercile separation (0.0\% vs.\ 92.3\% observed event rates) supports a straightforward triage protocol: zones in the high-risk tercile can be prioritised for immediate pre-evacuation preparation and resource staging, medium-risk zones can be placed on standby with elevated monitoring frequency, and low-risk zones can remain at routine surveillance intensity.
-This tercile-based approach is more robust than raw probability thresholds because it relies on the model's ranking ability (C-index~=~0.941) rather than on its absolute calibration, which varies across horizons as documented above.
-Decision curve analysis (Section~\ref{sec:dca_results}) confirmed positive net benefit across a wide threshold range at all three horizons, and the decision utility evaluation (Table~\ref{tab:dca_utility}) showed that at operationally relevant thresholds (e.g., 0.3 at 24~h) the model achieved sensitivity~$>$~0.98 and specificity~$>$~0.93, supporting its potential value for zone-level triage.
-Further evaluation against agency-specific decision thresholds in operational settings represents an important next step before practical deployment.
-The framework is positioned as a decision-support tool; final evacuation orders would rest with human responders integrating multiple information streams, and deployment would require integration with near-real-time fire-behaviour feeds~\cite{Radeloff2023}.
+\paragraph{Practical implications.}
+The risk stratification capability may be the most actionable contribution: a wildfire--zone pair at 3200~m with closing speed 400~m/h and growth rate 50~ha/h would yield fused probabilities of approximately $P(T \leq 12) = 0.72$, $P(T \leq 24) = 0.91$, $P(T \leq 48) = 0.95$, placing it in the high-risk tercile.
+The 24~h tercile separation (0.0\% vs.\ 92.3\%) supports a triage protocol: high-risk zones receive immediate pre-evacuation preparation, medium-risk zones go on standby, and low-risk zones remain at routine surveillance.
+This tercile-based approach is more robust than raw probability thresholds because it relies on ranking ability (C-index = 0.941) rather than absolute calibration.
+Decision curve analysis confirmed positive net benefit across a wide threshold range, with sensitivity~$>$~0.98 and specificity~$>$~0.93 at operationally relevant thresholds (e.g., 0.3 at 24~h).
+The framework is positioned as a decision-support tool; deployment would require integration with near-real-time fire-behaviour feeds~\cite{Radeloff2023} and evaluation against agency-specific thresholds.
 
 \paragraph{Strengths and limitations.}
-The strengths of this study include the censor-aware problem formulation, the nested cross-validation protocol with inner cross-fitting that prevents information leakage, and the enforcement of multi-horizon monotonicity.
-The study further benefits from transparent reporting of metric proxy definitions, comprehensive baseline and ablation analyses, evaluation of practical lean variants that identify defensible reduced architectures, and a five-seed stability analysis providing a secondary robustness check.
-The candid acknowledgement that simpler alternatives matched or exceeded the full framework at this sample size is itself informative for practitioners deciding which modelling approach to adopt.
-Nevertheless, the baseline comparisons could be further strengthened: the per-horizon XGBoost and RSF baselines included here are informative but not exhaustive.
-Future evaluations should additionally include deep survival models (e.g., DeepSurv~\cite{Katzman2018}) and discrete-time hazard models, which would provide a more demanding comparison against which the framework's structural advantages can be assessed.
+Strengths include the censor-aware problem formulation, nested cross-validation with inner cross-fitting, multi-horizon monotonicity enforcement, transparent metric proxy definitions, comprehensive ablation and baseline analyses, lean-variant evaluation, and five-seed stability analysis.
+The candid acknowledgement that simpler alternatives matched or exceeded the full framework is itself informative for practitioners.
+Future evaluations should include deep survival models (e.g., DeepSurv~\cite{Katzman2018}) and discrete-time hazard models for more demanding comparisons.
 
-Several specific limitations must be acknowledged.
-First, and most consequentially, the sample size ($n = 221$, 69 events) is insufficient to reliably support the full modelling complexity (34 features, multiple stacked modules).
-With 69 events and 34 candidate features, the events-per-variable (EPV) ratio is approximately 2.0, well below the commonly recommended threshold of $\text{EPV} \geq 10$~\cite{Riley2020}.
-This low EPV is the most parsimonious explanation for the central empirical finding that the full model did not significantly outperform the AFT-only baseline or simpler competitors: the additional modules likely introduce more estimation variance than the available data can constrain.
-The ablation results reinforce this interpretation: several modules (gate prior, IPCW) showed negligible independent contributions, and simpler baselines (per-horizon XGBoost, RSF) matched or exceeded the full model on aggregate metrics.
-The full multi-module framework should therefore be understood as an architectural demonstration whose practical benefits remain to be established on datasets with substantially higher EPV.
-The low EPV also raises concerns about the stability of the three-parameter beta calibration applied within inner folds, where effective eligible sample sizes may be as low as $\sim$35 observations at some horizons.
-This limits the precision of bootstrap CIs, the statistical power to detect small ablation effects, and the generalisability of all performance estimates.
-Second, the outer cross-validation folds were stratified by event-time strata but not grouped by verified wildfire incident identifier.
-If multiple zone observations correspond to the same underlying fire event, structurally similar observations may appear in both training and validation splits of the outer loop, potentially introducing optimistic bias into the reported performance metrics.
-Fold-level performance variability (reported in Supplementary Table~S4) should be considered when interpreting aggregate metrics.
-The auxiliary proxy grouped-CV analysis reported above suggested only modest average optimism ($\Delta$C-index = $-0.0035$), but grouped splitting also worsened the mean Brier score and materially widened fold-to-fold variability; because the groups were constructed from feature similarity rather than ground-truth incident IDs, formal incident-level grouped validation remains necessary when verified identifiers become available.
-Third, no external spatiotemporal validation was conducted; all results are from internal validation and may not generalise to wildfires in different geographic or climatic regions.
-Fourth, the censoring mechanism may not be fully non-informative: fire containment, one of the two main censoring causes, is an intervention correlated with fire behaviour and therefore may not satisfy the standard independent right-censoring assumption.
-As shown in the robustness results above, worst/best-case event-rate bounds widened from 0.027 at 12~h to 0.249 at 48~h, indicating that longer-horizon probabilities are materially more assumption-sensitive than the 24~h horizon.
-Future work should therefore explore censoring-robust methods such as sensitivity-weighted survival models or explicit competing-risk formulations that treat containment as a distinct event type.
-Fifth, the 72~h horizon was degenerate and could not be meaningfully evaluated.
-Sixth, the primary concordance index is a pairwise proxy~\cite{Harrell1996}; although Uno's IPCW C-statistic~\cite{Uno2011} is also reported and yields consistent results, both estimators have limitations under the present censoring distribution. Similarly, the IBS proxy is the arithmetic mean of discrete-horizon Brier scores, not a continuous-time integration~\cite{Graf1999}.
-These approximations were adopted for computational tractability under the present sample size and should be interpreted accordingly.
-Seventh, the post-hoc temperature-scaling recalibration is a sensitivity analysis only, not a core model component, and it introduces a calibration trade-off across horizons.
-Finally, this study represents an internally validated decision-support prototype; direct deployment for autonomous evacuation decision-making would require incident-level validation, external validation across diverse fire regimes, real-time data integration, and regulatory review.
+Several limitations warrant emphasis.
+First, the sample size ($n = 221$, 69 events, EPV~$\approx$~2.0) is the most consequential constraint: it is insufficient to reliably support the full modelling complexity, and is the most parsimonious explanation for why the full model did not outperform simpler competitors~\cite{Riley2020}.
+The low EPV also limits the stability of three-parameter beta calibration (effective inner-fold samples as low as $\sim$35), the precision of bootstrap CIs, and the statistical power of ablation tests.
+Second, the outer CV folds were not grouped by verified wildfire incident identifier; proxy grouped-CV analysis suggested modest average optimism ($\Delta$C-index = $-$0.004), but formal incident-level validation remains necessary.
+Third, no external spatiotemporal validation was conducted.
+Fourth, fire containment may violate the independent censoring assumption; worst/best-case event-rate bounds widened from 0.027 at 12~h to 0.249 at 48~h, motivating censoring-robust methods or competing-risk formulations in future work.
+Fifth, the 72~h horizon was degenerate.
+Sixth, both concordance indices and the IBS proxy are approximations adopted for tractability~\cite{Harrell1996,Uno2011,Graf1999}.
+Seventh, post-hoc temperature scaling is a sensitivity analysis introducing calibration trade-offs across horizons.
+Finally, direct deployment would require incident-level and external validation, real-time data integration, and regulatory review.
 
 \section{Conclusions}\label{sec:conclusions}
 
-A survival--probability fusion framework was developed and internally validated for multi-horizon wildfire threat forecasting under right censoring.
-The framework produced coherent, monotonic probability estimates at 12, 24, and 48~h horizons with strong discrimination (concordance index 0.940, Uno-C 0.941), low probability error (Brier scores 0.027--0.060), and effective risk stratification (24~h tercile event rates: 0.0\%, 4.5\%, 92.3\%).
-Calibration was horizon-dependent: the 24~h horizon was well calibrated (slope~=~0.998), the 48~h horizon was slightly underconfident (slope~=~1.075), but the 12~h horizon exhibited moderate overconfidence (slope~=~0.805); joint post-fusion temperature scaling improved the 12~h slope to 0.964 without materially degrading other horizons.
+A survival--probability fusion framework was developed and internally validated for multi-horizon wildfire threat forecasting under right censoring, producing coherent, monotonic probability estimates at 12, 24, and 48~h with strong discrimination (Uno-C = 0.941), low probability error (Brier 0.027--0.060), and sharp risk stratification (24~h tercile event rates: 0.0\%, 4.5\%, 92.3\%).
+The 24~h horizon emerged as the most reliable operational target (calibration slope = 0.998), while the 48~h horizon requires more cautious interpretation due to censoring sensitivity.
 
-The primary contribution is methodological rather than performance-oriented.
-The framework establishes a structured architectural template for censor-aware multi-horizon probability estimation with explicit monotone enforcement---an enforcement the ablation study confirmed to be substantively necessary, correcting logically incoherent probability sequences in approximately 25\% of observations.
-However, the full model did not outperform all baselines in aggregate: a Random Survival Forest achieved substantially lower probability error and the highest seed-to-seed stability, while lean AFT-centred variants matched the prototype's discrimination with far simpler architectures.
-At the present data scale ($n = 221$, 69 events, EPV~$\approx$~2.0), a simpler AFT-centred architecture with monotone fusion---or a Random Survival Forest---appears more appropriate as an interim practical choice; the full multi-module architecture constitutes a research prototype whose incremental benefits should be confirmed on larger datasets.
-Decision curve analysis confirmed positive net benefit across a wide threshold range at all three horizons, supporting the framework's potential value for zone-level triage even at the current sample size.
-Auxiliary robustness analyses using a lean AFT model suggested only modest grouped-validation optimism and similar discrimination under temporal blocking in the larger fire-season months, but informative-censoring sensitivity increased materially at 48~h.
-Accordingly, the 24~h horizon currently appears the most defensible operational target, whereas 48~h probabilities may still be useful for longer-lead triage but should be interpreted more cautiously.
+The primary contribution is methodological.
+The framework establishes a structured template for censor-aware multi-horizon probability estimation with explicit monotone enforcement---an enforcement confirmed to correct incoherent sequences in approximately 25\% of observations.
+At the present data scale (EPV~$\approx$~2.0), however, the full architecture did not outperform all alternatives: RSF achieved lower probability error and greater stability, and lean AFT variants matched the prototype's discrimination.
+A simpler AFT-centred pipeline with monotone fusion---or an RSF---is therefore the more appropriate interim choice; the full architecture constitutes a research prototype whose incremental benefits await confirmation on larger datasets.
 
-Future work should prioritise formal incident-level grouped cross-validation with verified identifiers---a supplementary proxy analysis using feature-space clustering showed limited optimistic bias ($\Delta$C-index = $-0.004$), but the grouping is approximate and should not substitute for ground-truth incident labels---as well as external spatiotemporal validation across diverse fire regimes, joint post-fusion calibration strategies that simultaneously address all horizons under the monotone constraint, and comparison with discrete-time hazard formulations and deep survival models (e.g., DeepSurv~\cite{Katzman2018}).
-A supplementary informative censoring sensitivity analysis showed event-rate sensitivity ranges of up to 24.9 percentage points at the 48~h horizon, motivating future work on censoring-robust estimation methods for wildfire applications.
-Prospective evaluation in operational early warning settings, integrated with real-time fire-spread data feeds, is the necessary next step toward deployment.
+Future work should prioritise incident-level grouped validation with verified identifiers, external spatiotemporal validation across diverse fire regimes, joint post-fusion calibration under the monotone constraint, and comparison with discrete-time hazard and deep survival models~\cite{Katzman2018}.
+Prospective evaluation in operational early warning settings, integrated with real-time fire-spread data, is the necessary next step toward deployment.
 
 %=================================================================
 % Back Matter

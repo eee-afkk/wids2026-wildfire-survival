@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Gate-Informed Survival–Probability Fusion for Censor-Aware
+Survival-Probability Fusion for Censor-Aware
 Multi-Horizon Wildfire Threat Forecasting
-==========================================================
+==========================================
 
 Supplementary code for:
-  "Gate-Informed Survival–Probability Fusion for Censor-Aware
+  "Survival-Probability Fusion for Censor-Aware
    Multi-Horizon Wildfire Threat Forecasting"
   Submitted to MDPI Fire.
 
@@ -3642,7 +3642,7 @@ def plot_graphical_abstract(metrics, save_path=None):
 
     # Title
     ax.text(6.5, 7.8,
-            "Gate-Informed Survival–Probability Fusion\n"
+            "Survival-Probability Fusion\n"
             "for Multi-Horizon Wildfire Threat Forecasting",
             ha="center", fontsize=11, fontweight="bold",
             color=COLORS["primary"], linespacing=1.4)
@@ -3688,14 +3688,14 @@ def plot_graphical_abstract(metrics, save_path=None):
 
     # Risk stratification highlight
     ax.text(6.5, 1.6,
-            "Risk stratification: 0.0% (low) · 6.1% (mid) · 90.8% (high)",
+            "Risk stratification: 0.0% (low) | 4.5% (mid) | 92.3% (high)",
             ha="center", fontsize=7.5, color=COLORS["accent"],
             fontweight="bold")
 
     # Properties
     ax.text(6.5, 0.9,
-            "Censor-aware  ·  Multi-horizon  ·  "
-            "Monotone-constrained  ·  Small-sample robust",
+            "Censor-aware  |  Multi-horizon  |  "
+            "Monotone-constrained  |  Low-EPV transparent",
             ha="center", fontsize=7, color="#555", style="italic")
 
     ax.text(6.5, 0.3, "Internal validation only (nested 5-fold CV)",
@@ -3747,7 +3747,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Gate-Informed Survival-Probability Fusion — Wildfire Threat Forecasting"
+        description="Survival-Probability Fusion - Wildfire Threat Forecasting"
     )
     parser.add_argument(
         "--data-dir",
