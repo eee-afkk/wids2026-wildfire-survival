@@ -32,6 +32,8 @@ Verified compile command: pdflatex -interaction=nonstopmode -halt-on-error -outp
 | manuscript/figures/main/Figure_9_pre_vs_post_recalibration.svg | raw_outputs/figures/original/Figure_8_recalibration.svg | Paper Figure 9 uses local recalibration figure. |
 | manuscript/figures/main/Figure_9_pre_vs_post_recalibration.png | raw_outputs/figures/original/Figure_8_recalibration.png | Paper Figure 9 uses local recalibration figure. |
 | manuscript/figures/main/Figure_9_pre_vs_post_recalibration.pdf | raw_outputs/figures/svg-inkscape/Figure_8_recalibration_svg-raw.pdf | Manuscript-ready PDF copied from svg-inkscape export. |
+| manuscript/figures/main/Figure_10_robustness_diagnostics.pdf | external user export `figure10_output/Figure_10_robustness_diagnostics.pdf` | Latest April 4, 2026 user-supplied Figure 10 export adopted as the manuscript main-text robustness figure. |
+| manuscript/figures/main/Figure_10_robustness_diagnostics.tif | external user export `figure10_output/Figure_10_robustness_diagnostics.tif` | Latest April 4, 2026 high-resolution submission asset retained for journal upload. |
 | manuscript/figures/main/Graphical_Abstract_wildfire_survival_pipeline.svg | raw_outputs/figures/original/Graphical_Abstract.svg | Graphical abstract renamed to manuscript-ready basename. |
 | manuscript/figures/main/Graphical_Abstract_wildfire_survival_pipeline.png | raw_outputs/figures/original/Graphical_Abstract.png | Graphical abstract renamed to manuscript-ready basename. |
 
@@ -85,3 +87,4 @@ Verified compile command: pdflatex -interaction=nonstopmode -halt-on-error -outp
 - code/supplement_analysis.py moved from supplement_code_s1.py.
 - docs/README.md, docs/data_README.md, and docs/requirements.txt moved from the project root.
 - build_artifacts/ now contains template.tex, svg-inkscape/, and LaTeX auxiliary files.
+- raw_outputs/csv/validation_strategy_summary.csv is retained as a repository support/provenance file and is not part of the numbered formal supplementary record.

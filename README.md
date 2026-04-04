@@ -18,7 +18,7 @@ The project studies censor-aware multi-horizon wildfire threat forecasting using
 
 - `manuscript/初稿v9.tex`: current manuscript source of truth
 - `manuscript/初稿v9.pdf`: compiled manuscript PDF
-- `manuscript/figures/main/`: final main-text figures (`Figure 1` to `Figure 9`)
+- `manuscript/figures/main/`: final main-text figures (`Figure 1` to `Figure 10`)
 - `manuscript/figures/supplementary/`: final supplementary figures (`Figure S1` to `Figure S7`)
 - `tables/main/`: manuscript-numbered main tables (`Table 1` to `Table 9`)
 - `tables/supplementary/`: manuscript-numbered supplementary tables (`Table S0` to `Table S11`)
@@ -38,7 +38,6 @@ wids2026-wildfire-survival/
 |- manuscript/
 |  |- 初稿v9.tex
 |  |- 初稿v9.pdf
-|  |- references.bib
 |  `- figures/
 |     |- main/
 |     `- supplementary/
@@ -60,7 +59,7 @@ wids2026-wildfire-survival/
 
 The repository follows the final numbering used in `初稿v9`:
 
-- Main figures: `Figure 1` to `Figure 9`
+- Main figures: `Figure 1` to `Figure 10`
 - Supplementary figures: `Figure S1` to `Figure S7`
 - Main tables: `Table 1` to `Table 9`
 - Supplementary tables: `Table S0` to `Table S11`
@@ -136,6 +135,8 @@ Key manuscript-reported results reflected in this package:
 - Mean Brier score (IBS proxy): 0.041
 - Zero post-fusion monotonicity violations
 - 24 h risk-tercile observed event rates: 0.0%, 4.5%, 92.3%
+- Proxy grouped-CV robustness check: mean C-index 0.9318 to 0.9283 and mean Brier 0.1352 to 0.1541
+- Informative-censoring sensitivity range: 0.027 at 12 h, 0.113 at 24 h, and 0.249 at 48 h
 
 ## Included and Excluded Materials
 
